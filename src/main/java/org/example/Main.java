@@ -13,6 +13,10 @@ public class Main {
 
         frame.setLocationRelativeTo(null); // center the frame on the screen
 
+        Game gamePanel = new Game(); // create an instance of the game panel
+        frame.add(gamePanel); // add the game panel to the frame
+
+
         frame.setVisible(true); // make the frame visible
     }
 }
