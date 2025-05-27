@@ -3,15 +3,21 @@ package org.example;
 import javax.swing.*;
 import java.awt.*;
 
-public class Game extends JPanel implements Runnable{
+public class Game extends JPanel implements Runnable {
     private Thread gameThread;
     private boolean running = false;
+    private final Paddle user1Paddle, user2Paddle;
 
     public Game() {
         // Initialize game components here
         setFocusable(true); // Allow the panel to receive focus for key events
         requestFocusInWindow(); // Request focus for the panel
+
+        // Create paddles for players
+        user1Paddle = new Paddle(10, 200, 15, 150, Color.BLUE);
+        user2Paddle = new Paddle(760, 200, 15, 150, Color.BLUE);
     }
+
     public void startGame() {
         running = true; // Set the running flag to true to start the game loop
         gameThread = new Thread(this); // Create a new thread for the game loop
@@ -44,11 +50,16 @@ public class Game extends JPanel implements Runnable{
     private void updateGame() {
         // logic of the game (e.g. object movement, collisions)
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw game elements here
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight()); // Fill background with black color
+
+        //Draw paddles
+        user1Paddle.paint(g);
+        user2Paddle.paint(g);
     }
 }

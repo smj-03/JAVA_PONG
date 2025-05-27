@@ -9,7 +9,7 @@ public class Main {
 
         frame.setSize(800, 600); // set the size of the frame
 
-        frame.setResizable(true); // allow resizing of the window
+        frame.setResizable(false); // allow resizing of the window
 
         frame.setLocationRelativeTo(null); // center the frame on the screen
 
