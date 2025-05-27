@@ -18,5 +18,7 @@ public class Main {
 
 
         frame.setVisible(true); // make the frame visible
+
+        gamePanel.startGame(); // start the game
     }
 }
