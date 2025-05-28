@@ -29,13 +29,20 @@ public class Paddle {
     public int getY() {
         return y; // return the y position of the paddle
     }
-    public void move(int newY) {
+    public void move(int newY, int panelHeight) {
+
         this.y = newY; // update the y position of the paddle
         if (this.y < 0) {
             this.y = 0; // prevent paddle from going above the top edge
         }
-        if (this.y + height > 600) { // assuming the height of the game area is 600
-            this.y = 600 - height; // prevent paddle from going below the bottom edge
+        if (this.y + height > panelHeight) { // assuming the height of the game area is 600
+            this.y = panelHeight - height; // prevent paddle from going below the bottom edge
         }
+    }
+
+    public boolean intersects(Ball ball) {
+        // Check if the paddle intersects with the ball
+        return (ball.getX() < x + width && ball.getX() + ball.getDiameter() > x &&
+                ball.getY() < y + height && ball.getY() + ball.getDiameter() > y);
     }
 }

@@ -16,6 +16,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private boolean upPressedPaddle2 = false;
     private boolean downPressedPaddle2 = false;
 
+    private Ball ball;
+
     public Game() {
         // Initialize game components here
         setFocusable(true); // Allow the panel to receive focus for key events
@@ -25,6 +27,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Create paddles for players
         user1Paddle = new Paddle(10, 200, 15, 150, Color.BLUE);
         user2Paddle = new Paddle(760, 200, 15, 150, Color.BLUE);
+
+        // Create a ball
+        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
     }
 
     public void startGame() {
@@ -48,6 +53,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
         while (running) {
             updateGame(); // Update game state
             repaint();    // Game rendering
+            ball.move(); // Move the ball
+            ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
+            if (user1Paddle.intersects(ball) || user2Paddle.intersects(ball)) {
+                ball.reverseXDirection(); // zmień kierunek ruchu piłki w poziomie
+            }
+
             try {
                 Thread.sleep(16); // about 60 FPS (1000 ms / 60 = ~16 ms)
             } catch (InterruptedException e) {
@@ -58,17 +69,17 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private void updateGame() {
         if (upPressedPaddle1) {
-            user1Paddle.move(user1Paddle.getY() - 5); // move up player 1
+            user1Paddle.move(user1Paddle.getY() - 5, getHeight()); // move up player 1
         }
         if (downPressedPaddle1) {
-            user1Paddle.move(user1Paddle.getY() + 5); // move down player 1
+            user1Paddle.move(user1Paddle.getY() + 5, getHeight()); // move down player 1
         }
 
         if (upPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() - 5); // move up player 2
+            user2Paddle.move(user2Paddle.getY() - 5, getHeight()); // move up player 2
         }
         if (downPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() + 5); // move down for player 2
+            user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down for player 2
         }
     }
 
@@ -121,5 +132,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         //Draw paddles
         user1Paddle.paint(g);
         user2Paddle.paint(g);
+
+        // Draw the ball
+        ball.paint(g);
     }
 }
