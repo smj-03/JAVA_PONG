@@ -165,6 +165,14 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 user2Paddle.move(user2Paddle.getY() + direction * speed, getHeight());
             }
         }
+        else{
+            if (upPressedPaddle2) {
+                user2Paddle.move(user2Paddle.getY() - 5, getHeight()); // move up player 2
+            }
+            if (downPressedPaddle2) {
+                user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down player 2
+            }
+        }
 
     }
 

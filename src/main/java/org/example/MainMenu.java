@@ -41,29 +41,50 @@ public class MainMenu extends JPanel {
 
         add(Box.createVerticalStrut(100));
 
-        JButton playButton = new JButton("Play");
+        // Utwórz panel na przyciski gry
+        JPanel playButtonsPanel = new JPanel();
+        playButtonsPanel.setMaximumSize(new Dimension(520, 50));
+        playButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0)); // 20 px odstępu
+        playButtonsPanel.setOpaque(false);
+
+        JButton playWithComputerButton = new JButton("Play with Computer");
+        JButton play1v1Button = new JButton("1v1");
         JButton settingsButton = new JButton("Settings");
         JButton quitButton = new JButton("Quit");
 
-        playButton.setAlignmentX(CENTER_ALIGNMENT);
+        playWithComputerButton.setAlignmentX(CENTER_ALIGNMENT);
+        play1v1Button.setAlignmentX(CENTER_ALIGNMENT);
+
         settingsButton.setAlignmentX(CENTER_ALIGNMENT);
         quitButton.setAlignmentX(CENTER_ALIGNMENT);
 
         Dimension buttonSize = new Dimension(200, 40);
-        playButton.setMaximumSize(buttonSize);
+        playWithComputerButton.setPreferredSize(buttonSize);
+        play1v1Button.setPreferredSize(buttonSize);
+
         settingsButton.setMaximumSize(buttonSize);
         quitButton.setMaximumSize(buttonSize);
 
-        add(playButton);
+        add(playButtonsPanel);
+        playButtonsPanel.add(playWithComputerButton);
+        playButtonsPanel.add(play1v1Button);
         add(Box.createVerticalStrut(20));
         add(settingsButton);
         add(Box.createVerticalStrut(20));
         add(quitButton);
 
-        // BUTTON ACTIONS
-        playButton.addActionListener(e -> {
+        playWithComputerButton.addActionListener(e -> {
             timer.stop(); // stop animation
             Game gamePanel = new Game(true, aiDifficulty.EASY); // Start game with AI difficulty
+            frame.setContentPane(gamePanel);
+            frame.revalidate();
+            SwingUtilities.invokeLater(gamePanel::requestFocusInWindow);
+            gamePanel.startGame();
+        });
+
+        play1v1Button.addActionListener(e -> {
+            timer.stop(); // stop animation
+            Game gamePanel = new Game(false, aiDifficulty.EASY); // Start game without AI
             frame.setContentPane(gamePanel);
             frame.revalidate();
             SwingUtilities.invokeLater(gamePanel::requestFocusInWindow);
