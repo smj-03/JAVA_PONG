@@ -2,6 +2,8 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -18,8 +20,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private Ball ball;
 
+    private JButton stopButton;
+
     public Game() {
         // Initialize game components here
+        setLayout(null);
         setFocusable(true); // Allow the panel to receive focus for key events
         requestFocusInWindow(); // Request focus for the panel
         addKeyListener(this); // Add key listener to handle key events
@@ -30,10 +35,28 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         // Create a ball
         ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
+        // Create and configure the stop button
+        stopButton = new JButton("Stop Game");
+        stopButton.setBounds(350, 10, 100, 30); // Position the button
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (running) {
+                    stopGame(); // Stop the game
+                    stopButton.setText("Resume Game"); // Change button text to "Resume Game"
+                } else {
+                    startGame(); // Resume the game
+                    stopButton.setText("Stop Game"); // Change button text to "Stop Game"
+                }
+            }
+        });
+        add(stopButton); // Add the button to the panel
     }
 
     public void startGame() {
+        if (running) return;
         running = true; // Set the running flag to true to start the game loop
+        requestFocusInWindow(); // Ensure the panel regains focus for key events
         gameThread = new Thread(this); // Create a new thread for the game loop
         gameThread.start(); // Start the game thread
     }

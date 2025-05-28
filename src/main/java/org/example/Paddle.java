@@ -31,7 +31,6 @@ public class Paddle {
     }
 
     public void move(int newY, int panelHeight) {
-
         this.y = newY; // update the y position of the paddle
         if (this.y < 0) {
             this.y = 0; // prevent paddle from going above the top edge
