@@ -30,6 +30,10 @@ public class Paddle {
         return y; // return the y position of the paddle
     }
 
+    public int getHeight() {
+        return height; // return the height of the paddle
+    }
+
     public void move(int newY, int panelHeight) {
         this.y = newY; // update the y position of the paddle
         if (this.y < 0) {
