@@ -16,6 +16,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private boolean upPressedPaddle2 = false;
     private boolean downPressedPaddle2 = false;
 
+    private Ball ball;
+
     public Game() {
         // Initialize game components here
         setFocusable(true); // Allow the panel to receive focus for key events
@@ -25,6 +27,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Create paddles for players
         user1Paddle = new Paddle(10, 200, 15, 150, Color.BLUE);
         user2Paddle = new Paddle(760, 200, 15, 150, Color.BLUE);
+
+        // Create a ball
+        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
     }
 
     public void startGame() {
@@ -121,5 +126,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         //Draw paddles
         user1Paddle.paint(g);
         user2Paddle.paint(g);
+
+        // Draw the ball
+        ball.paint(g);
     }
 }
