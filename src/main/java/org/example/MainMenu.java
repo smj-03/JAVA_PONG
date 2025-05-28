@@ -61,7 +61,7 @@ public class MainMenu extends JPanel {
         // BUTTON ACTIONS
         playButton.addActionListener(e -> {
             timer.stop(); // stop animation
-            Game gamePanel = new Game();
+            Game gamePanel = new Game(true);
             frame.setContentPane(gamePanel);
             frame.revalidate();
             SwingUtilities.invokeLater(gamePanel::requestFocusInWindow);

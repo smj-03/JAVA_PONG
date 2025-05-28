@@ -26,7 +26,10 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private JButton stopButton;
 
-    public Game() {
+    private boolean vsAI;
+
+    public Game(boolean vsAI) {
+        this.vsAI = vsAI;
         // Initialize game components here
         setLayout(null);
         setFocusable(true); // Allow the panel to receive focus for key events
@@ -123,6 +126,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     private void updateGame() {
+
         if (upPressedPaddle1) {
             user1Paddle.move(user1Paddle.getY() - 5, getHeight()); // move up player 1
         }
@@ -130,11 +134,18 @@ public class Game extends JPanel implements Runnable, KeyListener {
             user1Paddle.move(user1Paddle.getY() + 5, getHeight()); // move down player 1
         }
 
-        if (upPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() - 5, getHeight()); // move up player 2
-        }
-        if (downPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down for player 2
+        if (vsAI) {
+            int paddleCenter = user2Paddle.getY() + user2Paddle.getHeight() / 2;
+            int ballCenter = ball.getY() + ball.getDiameter() / 2;
+            int dy = ballCenter - paddleCenter;
+
+            int deadZone = 5; // martwa strefa: nie ruszaj się, jeśli różnica jest mniejsza niż 5 px
+            int speed = 3; // prędkość paletki
+
+            if (Math.abs(dy) > deadZone) {
+                int direction = (dy > 0) ? 1 : -1;
+                user2Paddle.move(user2Paddle.getY() + direction * speed, getHeight());
+            }
         }
     }
 
