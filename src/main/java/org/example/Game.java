@@ -96,7 +96,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             upPressedPaddle2 = true; // Set flag for paddle 2 moving up
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            downPressedPaddle2= true; // Set flag for paddle 2 moving down
+            downPressedPaddle2 = true; // Set flag for paddle 2 moving down
         }
     }
 
