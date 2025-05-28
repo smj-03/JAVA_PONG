@@ -24,6 +24,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private JButton stopButton;
 
+    private int user1Score, user2Score;
+
     public Game() {
         // Initialize game components here
         setLayout(null);
@@ -34,6 +36,10 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Create paddles for players
         user1Paddle = new Paddle(10, 200, 15, 150, Color.BLUE);
         user2Paddle = new Paddle(760, 200, 15, 150, Color.BLUE);
+
+        // Initialize scores for both players
+        user1Score = 0;
+        user2Score = 0;
 
         // Create a ball
         ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
@@ -80,6 +86,21 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 ball.reverseXDirection(); // zmień kierunek ruchu piłki w poziomie
             }
 
+            // Check for scoring conditions
+            if (ball.getX() < 0) { // Ball went out on player 2's side
+                user2Score++; // Increment player 2's score
+                resetGame(); // Reset the game after scoring
+            } else if (ball.getX() + ball.getDiameter() > getWidth()) { // Ball went out on player 1's side
+                user1Score++; // Increment player 1's score
+                resetGame(); // Reset the game after scoring
+            }
+
+            // check end game conditions
+            if (user1Score >= 5 || user2Score >= 5) { // Example condition for ending the game
+                running = false; // Stop the game loop
+                JOptionPane.showMessageDialog(this, "Game Over! Final Score: Player 1 - " + user1Score + ", Player 2 - " + user2Score);
+                stopGame();
+            }
             try {
                 Thread.sleep(16); // about 60 FPS (1000 ms / 60 = ~16 ms)
             } catch (InterruptedException e) {
@@ -112,6 +133,18 @@ public class Game extends JPanel implements Runnable, KeyListener {
         if (downPressedPaddle2) {
             user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down for player 2
         }
+    }
+
+    public void resetGame() {
+        //pause for a second
+        try{
+            Thread.sleep(1000);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        // Reset game state for a new game
+        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Reset ball position and speed
     }
 
     @Override
@@ -176,5 +209,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         // Draw the ball
         ball.paint(g);
+
+        // Draw scores
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 24)); // Set font for the score
+        g.drawString("Player 1: " + user1Score, 50, 30); // Draw player 1's score
+        g.drawString("Player 2: " + user2Score, getWidth() - 150, 30); // Draw player 2's score
+
     }
 }
