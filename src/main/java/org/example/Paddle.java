@@ -15,7 +15,7 @@ public class Paddle {
         this.color = color; // color of the paddle
     }
 
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
         //paint the rectangle for the paddle
         g.setColor(color);
         g.fillRect(x, y, width, height);
@@ -29,6 +29,11 @@ public class Paddle {
     public int getY() {
         return y; // return the y position of the paddle
     }
+
+    public int getHeight() {
+        return height; // return the height of the paddle
+    }
+
     public void move(int newY, int panelHeight) {
         this.y = newY; // update the y position of the paddle
         if (this.y < 0) {
