@@ -43,19 +43,19 @@ public class Ball {
         return diameter;
     }
 
-    public void bounceOffWalls(int top , int bottom) {
+    public void bounceOffWalls(int top, int bottom) {
         //if the y value is at the bottom of the screen
         if (y > 540) {
             reverseYDirection();
         }
         //if y value is at top of screen
-        else if(y < 0){
+        else if (y < 0) {
             reverseYDirection();
         }
 
     }
 
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
 
         //set the brush color to the ball color
         g.setColor(color);

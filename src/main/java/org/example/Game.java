@@ -2,6 +2,8 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -16,12 +18,17 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private boolean upPressedPaddle2 = false;
     private boolean downPressedPaddle2 = false;
 
+    private boolean escapePressed = false;
+
     private Ball ball;
 
     private int user1Score, user2Score;
 
+    private JButton stopButton;
+
     public Game() {
         // Initialize game components here
+        setLayout(null);
         setFocusable(true); // Allow the panel to receive focus for key events
         requestFocusInWindow(); // Request focus for the panel
         addKeyListener(this); // Add key listener to handle key events
@@ -36,13 +43,27 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         // Create a ball
         ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
+        // Create and configure the stop button
+        stopButton = new JButton("Stop Game");
+        stopButton.setBounds(350, 10, 100, 30); // Position the button
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleGameState();
+                requestFocusInWindow();
+            }
+        });
+        add(stopButton); // Add the button to the panel
     }
 
     public void startGame() {
+        if (running) return;
         running = true; // Set the running flag to true to start the game loop
+        requestFocusInWindow(); // Ensure the panel regains focus for key events
         gameThread = new Thread(this); // Create a new thread for the game loop
         gameThread.start(); // Start the game thread
     }
+
 
     public void stopGame() {
         running = false; // Set the running flag to false to stop the game loop
@@ -88,6 +109,16 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
     }
 
+    private void toggleGameState() {
+        if (running) {
+            stopGame(); // Stop the game
+            stopButton.setText("Resume Game"); // Change button text to "Resume Game"
+        } else {
+            startGame(); // Resume the game
+            stopButton.setText("Stop Game"); // Change button text to "Stop Game"
+        }
+    }
+
     private void updateGame() {
         if (upPressedPaddle1) {
             user1Paddle.move(user1Paddle.getY() - 5, getHeight()); // move up player 1
@@ -129,7 +160,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
             upPressedPaddle2 = true; // Set flag for paddle 2 moving up
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            downPressedPaddle2= true; // Set flag for paddle 2 moving down
+            downPressedPaddle2 = true; // Set flag for paddle 2 moving down
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !escapePressed) {
+            escapePressed = true;
+            toggleGameState();
         }
     }
 
@@ -148,6 +184,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             downPressedPaddle2 = false; // Reset flag for paddle 2 moving down
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            escapePressed = false;
+        }
+
     }
 
     @Override
