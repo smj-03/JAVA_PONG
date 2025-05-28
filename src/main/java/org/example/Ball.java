@@ -53,14 +53,6 @@ public class Ball {
             reverseYDirection();
         }
 
-        //if x value is at left or right side
-        //hard-coded values, we will delete this section later
-        if(x < 0){
-            reverseXDirection();
-        }
-        else if(x > 760){
-            reverseXDirection();
-        }
     }
 
     public void paint(Graphics g){
