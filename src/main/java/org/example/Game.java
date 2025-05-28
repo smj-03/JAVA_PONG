@@ -121,17 +121,17 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private void updateGame() {
         if (upPressedPaddle1) {
-            user1Paddle.move(user1Paddle.getY() - 5, getHeight()); // move up player 1
+            user1Paddle.moveYWithinBounds(user1Paddle.getY() - 5, getHeight()); // move up player 1
         }
         if (downPressedPaddle1) {
-            user1Paddle.move(user1Paddle.getY() + 5, getHeight()); // move down player 1
+            user1Paddle.moveYWithinBounds(user1Paddle.getY() + 5, getHeight()); // move down player 1
         }
 
         if (upPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() - 5, getHeight()); // move up player 2
+            user2Paddle.moveYWithinBounds(user2Paddle.getY() - 5, getHeight()); // move up player 2
         }
         if (downPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down for player 2
+            user2Paddle.moveYWithinBounds(user2Paddle.getY() + 5, getHeight()); // move down for player 2
         }
     }
 
@@ -204,11 +204,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         g.fillRect(0, 0, getWidth(), getHeight()); // Fill background with black color
 
         //Draw paddles
-        user1Paddle.paint(g);
-        user2Paddle.paint(g);
+        user1Paddle.draw(g);
+        user2Paddle.draw(g);
 
         // Draw the ball
-        ball.paint(g);
+        ball.draw(g);
 
         // Draw scores
         g.setColor(Color.WHITE);

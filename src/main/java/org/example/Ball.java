@@ -2,20 +2,15 @@ package org.example;
 
 import java.awt.*;
 
-public class Ball {
-    private int x, y; // position of the ball
-    private int diameter; // diameter of the ball
-    private int xSpeed, ySpeed; // speed of the ball in x and y directions
-    private int size; // size of the ball
-    private Color color; // color of the ball
+public class Ball extends Object {
+    private int diameter;
+    private int xSpeed, ySpeed;
 
     public Ball(int x, int y, int diameter, int xSpeed, int ySpeed, Color color) {
-        this.x = x;
-        this.y = y;
+        super(x, y, diameter, diameter, color);
         this.diameter = diameter;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
-        this.color = color;
     }
 
     public void move() {
@@ -31,18 +26,15 @@ public class Ball {
         ySpeed = -ySpeed;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+    public void setDiameter(int d) {
+        diameter = d;
     }
 
     public int getDiameter() {
         return diameter;
     }
 
+    // TODO: CHANGE THE LOGIC IF VIEWPORT IS SET
     public void bounceOffWalls(int top, int bottom) {
         //if the y value is at the bottom of the screen
         if (y > 540) {
@@ -52,16 +44,10 @@ public class Ball {
         else if (y < 0) {
             reverseYDirection();
         }
-
     }
 
-    public void paint(Graphics g) {
-
-        //set the brush color to the ball color
+    public void draw(Graphics g) {
         g.setColor(color);
-
-        //paint the ball at x, y with a width and height of the ball size
         g.fillOval(x, y, diameter, diameter);
-
     }
 }
