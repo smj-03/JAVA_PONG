@@ -59,7 +59,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 ball.reverseXDirection(); // zmień kierunek ruchu piłki w poziomie
             }
 
-
             try {
                 Thread.sleep(16); // about 60 FPS (1000 ms / 60 = ~16 ms)
             } catch (InterruptedException e) {
