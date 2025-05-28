@@ -41,10 +41,14 @@ public class MainMenu extends JPanel {
 
         add(Box.createVerticalStrut(100));
 
-        // Utwórz panel na przyciski gry
+        createButtons(frame);
+    }
+
+    protected void createButtons(JFrame frame) {
+        // Panel na przyciski trybu gry
         JPanel playButtonsPanel = new JPanel();
         playButtonsPanel.setMaximumSize(new Dimension(520, 50));
-        playButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0)); // 20 px odstępu
+        playButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
         playButtonsPanel.setOpaque(false);
 
         JButton playWithComputerButton = new JButton("Play with Computer");
@@ -52,39 +56,36 @@ public class MainMenu extends JPanel {
         JButton settingsButton = new JButton("Settings");
         JButton quitButton = new JButton("Quit");
 
-        playWithComputerButton.setAlignmentX(CENTER_ALIGNMENT);
-        play1v1Button.setAlignmentX(CENTER_ALIGNMENT);
-
         settingsButton.setAlignmentX(CENTER_ALIGNMENT);
         quitButton.setAlignmentX(CENTER_ALIGNMENT);
 
         Dimension buttonSize = new Dimension(200, 40);
         playWithComputerButton.setPreferredSize(buttonSize);
         play1v1Button.setPreferredSize(buttonSize);
-
         settingsButton.setMaximumSize(buttonSize);
         quitButton.setMaximumSize(buttonSize);
 
-        add(playButtonsPanel);
+        // Dodawanie przycisków do panelu
         playButtonsPanel.add(playWithComputerButton);
         playButtonsPanel.add(play1v1Button);
+        add(playButtonsPanel);
         add(Box.createVerticalStrut(20));
         add(settingsButton);
         add(Box.createVerticalStrut(20));
         add(quitButton);
 
+        // Obsługa kliknięć
         playWithComputerButton.addActionListener(e -> {
-            timer.stop(); // stop animation
-            Game gamePanel = new Game(true, aiDifficulty.EASY); // Start game with AI difficulty
-            frame.setContentPane(gamePanel);
+            timer.stop();
+            org.example.DifficultyMenu difficultyPanel = new org.example.DifficultyMenu(frame, this);
+            frame.setContentPane(difficultyPanel);
             frame.revalidate();
-            SwingUtilities.invokeLater(gamePanel::requestFocusInWindow);
-            gamePanel.startGame();
+            SwingUtilities.invokeLater(difficultyPanel::requestFocusInWindow);
         });
 
         play1v1Button.addActionListener(e -> {
-            timer.stop(); // stop animation
-            Game gamePanel = new Game(false, aiDifficulty.EASY); // Start game without AI
+            timer.stop();
+            Game gamePanel = new Game(false, aiDifficulty.EASY);
             frame.setContentPane(gamePanel);
             frame.revalidate();
             SwingUtilities.invokeLater(gamePanel::requestFocusInWindow);
@@ -92,7 +93,7 @@ public class MainMenu extends JPanel {
         });
 
         settingsButton.addActionListener(e -> {
-            timer.stop(); // stop animation
+            timer.stop();
             SettingsMenu settingsPanel = new SettingsMenu(frame, this);
             frame.setContentPane(settingsPanel);
             frame.revalidate();
@@ -101,7 +102,6 @@ public class MainMenu extends JPanel {
 
         quitButton.addActionListener(e -> System.exit(0));
     }
-
     public void resumeAnimation() {
         if (timer != null && !timer.isRunning()) {
             timer.start();
