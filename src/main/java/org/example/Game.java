@@ -2,6 +2,8 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -16,10 +18,17 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private boolean upPressedPaddle2 = false;
     private boolean downPressedPaddle2 = false;
 
+    private boolean escapePressed = false;
+
     private Ball ball;
+
+    private int user1Score, user2Score;
+
+    private JButton stopButton;
 
     public Game() {
         // Initialize game components here
+        setLayout(null);
         setFocusable(true); // Allow the panel to receive focus for key events
         requestFocusInWindow(); // Request focus for the panel
         addKeyListener(this); // Add key listener to handle key events
@@ -28,15 +37,33 @@ public class Game extends JPanel implements Runnable, KeyListener {
         user1Paddle = new Paddle(10, 200, 15, 150, Color.BLUE);
         user2Paddle = new Paddle(760, 200, 15, 150, Color.BLUE);
 
+        // Initialize scores for both players
+        user1Score = 0;
+        user2Score = 0;
+
         // Create a ball
         ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
+        // Create and configure the stop button
+        stopButton = new JButton("Stop Game");
+        stopButton.setBounds(350, 10, 100, 30); // Position the button
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleGameState();
+                requestFocusInWindow();
+            }
+        });
+        add(stopButton); // Add the button to the panel
     }
 
     public void startGame() {
+        if (running) return;
         running = true; // Set the running flag to true to start the game loop
+        requestFocusInWindow(); // Ensure the panel regains focus for key events
         gameThread = new Thread(this); // Create a new thread for the game loop
         gameThread.start(); // Start the game thread
     }
+
 
     public void stopGame() {
         running = false; // Set the running flag to false to stop the game loop
@@ -59,11 +86,36 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 ball.reverseXDirection(); // zmień kierunek ruchu piłki w poziomie
             }
 
+            // Check for scoring conditions
+            if (ball.getX() < 0) { // Ball went out on player 2's side
+                user2Score++; // Increment player 2's score
+                resetGame(); // Reset the game after scoring
+            } else if (ball.getX() + ball.getDiameter() > getWidth()) { // Ball went out on player 1's side
+                user1Score++; // Increment player 1's score
+                resetGame(); // Reset the game after scoring
+            }
+
+            // check end game conditions
+            if (user1Score >= 5 || user2Score >= 5) { // Example condition for ending the game
+                running = false; // Stop the game loop
+                JOptionPane.showMessageDialog(this, "Game Over! Final Score: Player 1 - " + user1Score + ", Player 2 - " + user2Score);
+                stopGame();
+            }
             try {
                 Thread.sleep(16); // about 60 FPS (1000 ms / 60 = ~16 ms)
             } catch (InterruptedException e) {
                 e.printStackTrace(); // Handle interruption exception
             }
+        }
+    }
+
+    private void toggleGameState() {
+        if (running) {
+            stopGame(); // Stop the game
+            stopButton.setText("Resume Game"); // Change button text to "Resume Game"
+        } else {
+            startGame(); // Resume the game
+            stopButton.setText("Stop Game"); // Change button text to "Stop Game"
         }
     }
 
@@ -83,6 +135,18 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
     }
 
+    public void resetGame() {
+        //pause for a second
+        try{
+            Thread.sleep(1000);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        // Reset game state for a new game
+        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Reset ball position and speed
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
@@ -96,7 +160,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
             upPressedPaddle2 = true; // Set flag for paddle 2 moving up
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            downPressedPaddle2= true; // Set flag for paddle 2 moving down
+            downPressedPaddle2 = true; // Set flag for paddle 2 moving down
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !escapePressed) {
+            escapePressed = true;
+            toggleGameState();
         }
     }
 
@@ -115,6 +184,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             downPressedPaddle2 = false; // Reset flag for paddle 2 moving down
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            escapePressed = false;
+        }
+
     }
 
     @Override
@@ -135,5 +209,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         // Draw the ball
         ball.paint(g);
+
+        // Draw scores
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 24)); // Set font for the score
+        g.drawString("Player 1: " + user1Score, 50, 30); // Draw player 1's score
+        g.drawString("Player 2: " + user2Score, getWidth() - 150, 30); // Draw player 2's score
+
     }
 }
