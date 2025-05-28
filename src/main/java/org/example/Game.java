@@ -53,6 +53,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         while (running) {
             updateGame(); // Update game state
             repaint();    // Game rendering
+            ball.move(); // Move the ball
+            ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
             try {
                 Thread.sleep(16); // about 60 FPS (1000 ms / 60 = ~16 ms)
             } catch (InterruptedException e) {
