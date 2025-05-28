@@ -18,6 +18,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private boolean upPressedPaddle2 = false;
     private boolean downPressedPaddle2 = false;
 
+    private boolean escapePressed = false;
+
     private Ball ball;
 
     private JButton stopButton;
@@ -41,13 +43,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (running) {
-                    stopGame(); // Stop the game
-                    stopButton.setText("Resume Game"); // Change button text to "Resume Game"
-                } else {
-                    startGame(); // Resume the game
-                    stopButton.setText("Stop Game"); // Change button text to "Stop Game"
-                }
+                toggleGameState();
+                requestFocusInWindow();
             }
         });
         add(stopButton); // Add the button to the panel
@@ -60,6 +57,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         gameThread = new Thread(this); // Create a new thread for the game loop
         gameThread.start(); // Start the game thread
     }
+
 
     public void stopGame() {
         running = false; // Set the running flag to false to stop the game loop
@@ -87,6 +85,16 @@ public class Game extends JPanel implements Runnable, KeyListener {
             } catch (InterruptedException e) {
                 e.printStackTrace(); // Handle interruption exception
             }
+        }
+    }
+
+    private void toggleGameState() {
+        if (running) {
+            stopGame(); // Stop the game
+            stopButton.setText("Resume Game"); // Change button text to "Resume Game"
+        } else {
+            startGame(); // Resume the game
+            stopButton.setText("Stop Game"); // Change button text to "Stop Game"
         }
     }
 
@@ -121,6 +129,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             downPressedPaddle2 = true; // Set flag for paddle 2 moving down
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !escapePressed) {
+            escapePressed = true;
+            toggleGameState();
+        }
     }
 
     @Override
@@ -138,6 +151,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             downPressedPaddle2 = false; // Reset flag for paddle 2 moving down
         }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            escapePressed = false;
+        }
+
     }
 
     @Override
