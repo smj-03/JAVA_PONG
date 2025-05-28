@@ -10,6 +10,8 @@ public class MainMenu extends JPanel {
     private Ball ball;
     private Timer timer;
 
+    private aiDifficulty difficulty;
+
     public MainMenu(JFrame frame) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.BLACK);
@@ -61,7 +63,7 @@ public class MainMenu extends JPanel {
         // BUTTON ACTIONS
         playButton.addActionListener(e -> {
             timer.stop(); // stop animation
-            Game gamePanel = new Game(true);
+            Game gamePanel = new Game(true, aiDifficulty.EASY); // Start game with AI difficulty
             frame.setContentPane(gamePanel);
             frame.revalidate();
             SwingUtilities.invokeLater(gamePanel::requestFocusInWindow);

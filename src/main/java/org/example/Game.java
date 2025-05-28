@@ -28,8 +28,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private boolean vsAI;
 
-    public Game(boolean vsAI) {
+    private aiDifficulty aiDifficulty; // pole w klasie Game
+
+    public Game(boolean vsAI, aiDifficulty aiDifficulty) {
         this.vsAI = vsAI;
+        this.aiDifficulty = aiDifficulty; // Default AI difficulty
         // Initialize game components here
         setLayout(null);
         setFocusable(true); // Allow the panel to receive focus for key events
@@ -139,14 +142,30 @@ public class Game extends JPanel implements Runnable, KeyListener {
             int ballCenter = ball.getY() + ball.getDiameter() / 2;
             int dy = ballCenter - paddleCenter;
 
-            int deadZone = 5; // martwa strefa: nie ruszaj się, jeśli różnica jest mniejsza niż 5 px
-            int speed = 3; // prędkość paletki
+            int deadZone = 20; // dead zone for AI paddle movement
+            int speed; // speed of AI paddle movement
+
+            switch (aiDifficulty) {
+                case EASY:
+                    speed = 2;
+                    break;
+                case MEDIUM:
+                    speed = 3;
+                    break;
+                case HARD:
+                    speed = 6;
+                    break;
+                default:
+
+                    speed = 3;
+            }
 
             if (Math.abs(dy) > deadZone) {
                 int direction = (dy > 0) ? 1 : -1;
                 user2Paddle.move(user2Paddle.getY() + direction * speed, getHeight());
             }
         }
+
     }
 
     public void resetGame() {
