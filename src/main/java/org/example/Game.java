@@ -55,6 +55,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
             repaint();    // Game rendering
             ball.move(); // Move the ball
             ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
+            if (user1Paddle.intersects(ball) || user2Paddle.intersects(ball)) {
+                ball.reverseXDirection(); // zmień kierunek ruchu piłki w poziomie
+            }
+
+
             try {
                 Thread.sleep(16); // about 60 FPS (1000 ms / 60 = ~16 ms)
             } catch (InterruptedException e) {

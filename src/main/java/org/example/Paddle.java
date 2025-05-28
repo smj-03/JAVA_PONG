@@ -38,4 +38,10 @@ public class Paddle {
             this.y = 600 - height; // prevent paddle from going below the bottom edge
         }
     }
+
+    public boolean intersects(Ball ball) {
+        // Check if the paddle intersects with the ball
+        return (ball.getX() < x + width && ball.getX() + ball.getDiameter() > x &&
+                ball.getY() < y + height && ball.getY() + ball.getDiameter() > y);
+    }
 }
