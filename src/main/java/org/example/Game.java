@@ -25,6 +25,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private int user1Score, user2Score;
 
     private JButton stopButton;
+    private JButton returnToMenuButton;
 
     private boolean vsAI;
 
@@ -60,6 +61,18 @@ public class Game extends JPanel implements Runnable, KeyListener {
             }
         });
         add(stopButton); // Add the button to the panel
+
+        // create and configure the return to menu button
+        returnToMenuButton = new JButton("Return to Menu");
+        returnToMenuButton.setBounds(325, 50, 150, 30);
+        returnToMenuButton.setVisible(false);
+        returnToMenuButton.addActionListener(e -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            MainMenu menuPanel = new MainMenu(topFrame);
+            topFrame.setContentPane(menuPanel);
+            topFrame.revalidate();
+        });
+        add(returnToMenuButton);
     }
 
     public void startGame() {
@@ -122,9 +135,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         if (running) {
             stopGame(); // Stop the game
             stopButton.setText("Resume Game"); // Change button text to "Resume Game"
+            returnToMenuButton.setVisible(true);
         } else {
             startGame(); // Resume the game
             stopButton.setText("Stop Game"); // Change button text to "Stop Game"
+            returnToMenuButton.setVisible(false);
         }
     }
 
