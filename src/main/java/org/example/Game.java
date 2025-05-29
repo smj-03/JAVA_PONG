@@ -26,7 +26,13 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private JButton stopButton;
 
-    public Game() {
+    private boolean vsAI;
+
+    private aiDifficulty aiDifficulty; // pole w klasie Game
+
+    public Game(boolean vsAI, aiDifficulty aiDifficulty) {
+        this.vsAI = vsAI;
+        this.aiDifficulty = aiDifficulty; // Default AI difficulty
         // Initialize game components here
         setLayout(null);
         setFocusable(true); // Allow the panel to receive focus for key events
@@ -82,10 +88,13 @@ public class Game extends JPanel implements Runnable, KeyListener {
             repaint();    // Game rendering
             ball.move(); // Move the ball
             ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
-            if (user1Paddle.intersects(ball) || user2Paddle.intersects(ball)) {
-                ball.reverseXDirection(); // zmień kierunek ruchu piłki w poziomie
+            if (user1Paddle.intersects(ball)) {
+                ball.bounceFromPaddle(user1Paddle); // Bounce the ball off player 1's paddle
             }
 
+            if (user2Paddle.intersects(ball)) {
+                ball.bounceFromPaddle(user2Paddle); // Bounce the ball off player 2's paddle
+            }
             // Check for scoring conditions
             if (ball.getX() < 0) { // Ball went out on player 2's side
                 user2Score++; // Increment player 2's score
@@ -120,6 +129,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     private void updateGame() {
+
         if (upPressedPaddle1) {
             user1Paddle.move(user1Paddle.getY() - 5, getHeight()); // move up player 1
         }
@@ -127,12 +137,43 @@ public class Game extends JPanel implements Runnable, KeyListener {
             user1Paddle.move(user1Paddle.getY() + 5, getHeight()); // move down player 1
         }
 
-        if (upPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() - 5, getHeight()); // move up player 2
+        if (vsAI) {
+            int paddleCenter = user2Paddle.getY() + user2Paddle.getHeight() / 2;
+            int ballCenter = ball.getY() + ball.getDiameter() / 2;
+            int dy = ballCenter - paddleCenter;
+
+            int deadZone = 20; // dead zone for AI paddle movement
+            int speed; // speed of AI paddle movement
+
+            switch (aiDifficulty) {
+                case EASY:
+                    speed = 2;
+                    break;
+                case MEDIUM:
+                    speed = 3;
+                    break;
+                case HARD:
+                    speed = 6;
+                    break;
+                default:
+
+                    speed = 3;
+            }
+
+            if (Math.abs(dy) > deadZone) {
+                int direction = (dy > 0) ? 1 : -1;
+                user2Paddle.move(user2Paddle.getY() + direction * speed, getHeight());
+            }
         }
-        if (downPressedPaddle2) {
-            user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down for player 2
+        else{
+            if (upPressedPaddle2) {
+                user2Paddle.move(user2Paddle.getY() - 5, getHeight()); // move up player 2
+            }
+            if (downPressedPaddle2) {
+                user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down player 2
+            }
         }
+
     }
 
     public void resetGame() {
