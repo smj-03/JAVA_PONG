@@ -1,5 +1,6 @@
 package org.example;
 
+//statysktyki
 public class StatisticsData {
     public int gamesPlayed;
     public int easyWins;

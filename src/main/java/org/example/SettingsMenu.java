@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+
  * Panel ustawień – pozwala na wybór:
  * - koloru piłki,
  * - koloru paletek,
@@ -24,10 +25,12 @@ public class SettingsMenu extends JPanel {
 
     private Font font;
 
+    //konstruktor
     public SettingsMenu(JFrame frame, JPanel mainMenuPanel) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.BLACK);
         setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+
 
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/MedodicaRegular.otf")).deriveFont(64f);
@@ -38,6 +41,7 @@ public class SettingsMenu extends JPanel {
 
         // ---------- Nagłówek ----------
         JLabel title = new JLabel("Game Settings");
+
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setFont(font);
         title.setForeground(Color.WHITE);
@@ -45,6 +49,7 @@ public class SettingsMenu extends JPanel {
         title.setMaximumSize(new Dimension(BOX_WIDTH, 50));
         add(title);
         add(Box.createRigidArea(new Dimension(0, 30)));
+
 
         // ---------- Wybór koloru piłki ----------
         TextButton ballColorButton = new TextButton("Ball color");
@@ -88,10 +93,12 @@ public class SettingsMenu extends JPanel {
         add(paddleColorButton);
         add(Box.createRigidArea(new Dimension(0, 30)));
 
-        // ---------- Prędkość piłki ----------
+        //predkosc pilki i zapis do pliku
         JPanel ballSpeedPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         ballSpeedPanel.setBackground(Color.BLACK);
+
         ballSpeedPanel.setMaximumSize(new Dimension(BOX_WIDTH, thirtyFive()));
+
         ballSpeedPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel ballSpeedLabel = new JLabel("Ball speed");
@@ -104,23 +111,22 @@ public class SettingsMenu extends JPanel {
                 new SpinnerNumberModel(Settings.ballSpeed, 1, 20, 1)
         );
         ((JSpinner.DefaultEditor) ballSpeedSpinner.getEditor()).getTextField().setColumns(2);
-        ballSpeedSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int nowaPredkosc = (Integer) ballSpeedSpinner.getValue();
-                Settings.ballSpeed = nowaPredkosc;
-                Settings.saveProperties();
-            }
+        ballSpeedSpinner.addChangeListener(e -> {
+            int nowaPredkosc = (Integer) ballSpeedSpinner.getValue();
+            Settings.ballSpeed = nowaPredkosc;
+            Settings.saveProperties();
         });
         ballSpeedPanel.add(ballSpeedSpinner);
 
         add(ballSpeedPanel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // ---------- Szerokość paletek (spinner) ----------
+        //szerokosc paletek i zapis do pliku
         JPanel paddleWidthPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         paddleWidthPanel.setBackground(Color.BLACK);
+
         paddleWidthPanel.setMaximumSize(new Dimension(BOX_WIDTH, thirtyFive()));
+
         paddleWidthPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel paddleWidthLabel = new JLabel("Paddle width");
@@ -133,23 +139,22 @@ public class SettingsMenu extends JPanel {
                 new SpinnerNumberModel(Settings.paddleWidth, 5, 100, 1)
         );
         ((JSpinner.DefaultEditor) paddleWidthSpinner.getEditor()).getTextField().setColumns(3);
-        paddleWidthSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int nowaSzerokosc = (Integer) paddleWidthSpinner.getValue();
-                Settings.paddleWidth = nowaSzerokosc;
-                Settings.saveProperties();
-            }
+        paddleWidthSpinner.addChangeListener(e -> {
+            int newWidth = (Integer) paddleWidthSpinner.getValue();
+            Settings.paddleWidth = newWidth;
+            Settings.saveProperties();
         });
         paddleWidthPanel.add(paddleWidthSpinner);
 
         add(paddleWidthPanel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // ---------- Wysokość paletek (spinner) ----------
+        //wysokosc palek i zapis do pliku
         JPanel paddleHeightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         paddleHeightPanel.setBackground(Color.BLACK);
+
         paddleHeightPanel.setMaximumSize(new Dimension(BOX_WIDTH, thirtyFive()));
+
         paddleHeightPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel paddleHeightLabel = new JLabel("Paddle height");
@@ -177,6 +182,7 @@ public class SettingsMenu extends JPanel {
 
         // ---------- Przycisk Powrót do menu ----------
         TextButton backButton = new TextButton("Back");
+
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         backButton.setMaximumSize(new Dimension(BOX_WIDTH, 40));
         backButton.addActionListener(new ActionListener() {
@@ -194,12 +200,5 @@ public class SettingsMenu extends JPanel {
             }
         });
         add(backButton);
-    }
-
-    /**
-     * Pomocnicza metoda zwracająca wysokość 35 px w sposób czytelny.
-     */
-    private int thirtyFive() {
-        return 35;
     }
 }
