@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class Game extends JPanel implements Runnable, KeyListener {
     private Thread gameThread;
     private boolean running = false;
+    private boolean gameEnded = false;
     private final Paddle user1Paddle;
     private final Paddle user2Paddle;
     private Paddle lastHitPaddle;
@@ -40,6 +42,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private final ImageButton playAgainButton; // pole w klasie Game
     private final ImageButton returnToMenuButton;
 
+    private Font font;
+
     private boolean vsAI;
 
     private aiDifficulty aiDifficulty; // pole w klasie Game
@@ -52,6 +56,14 @@ public class Game extends JPanel implements Runnable, KeyListener {
         setFocusable(true); // Allow the panel to receive focus for key events
         requestFocusInWindow(); // Request focus for the panel
         addKeyListener(this); // Add key listener to handle key events
+
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/MedodicaRegular.otf")).deriveFont(64f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            font = new Font("Courier New", Font.PLAIN, 64); // Fallback font
+        }
+
 
         // Create paddles for players
         user1Paddle = new Paddle(10, 200, Settings.paddleWidth, Settings.paddleHeight, Settings.paddleColor);
@@ -106,6 +118,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     public void startGame() {
         if (running) return;
+        gameEnded = false;
         running = true; // Set the running flag to true to start the game loop
         requestFocusInWindow(); // Ensure the panel regains focus for key events
         gameThread = new Thread(this); // Create a new thread for the game loop
@@ -124,6 +137,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     public void endGame() {
         running = false; // Zatrzymaj pętlę gry
+        gameEnded = true;
         resetGame();
         // Opcjonalnie: pokaż przycisk powrotu do menu lub ponownego startu gry
         returnToMenuButton.setVisible(true);
@@ -159,8 +173,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 e.printStackTrace();
             }
         }
-        // Pokaż wynik i zresetuj stan gry
-        // TODO: MESSAGE WHO WINS
     }
 
     @Override
@@ -196,7 +208,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             }
 
             // check end game conditions
-            if (user1Score >= 5 || user2Score >= 5) { // Example condition for ending the game
+            if (user1Score >= 1 || user2Score >= 1) { // Example condition for ending the game
                 running = false; // Stop the game loop
                 endGame();
             }
@@ -348,12 +360,19 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         // Draw scores
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 24)); // Set font for the score
-        g.drawString(String.valueOf(user1Score), 150, 30); // Draw player 1's score
-        g.drawString(String.valueOf(user2Score), getWidth() - 150, 30); // Draw player 2's score
+        g.setFont(font); // Set font for the score
+        g.drawString(String.valueOf(user1Score), 280, 58); // Draw player 1's score
+        g.drawString(String.valueOf(user2Score), getWidth() - 300, 58); // Draw player 2's score
 
         if (powerUp != null) {
             powerUp.draw(g);
+        }
+
+        if (gameEnded) {
+            g.setColor(Color.WHITE);
+            int winner = user1Score > user2Score ? 1 : 2;
+            g.drawString("Player " + winner + " wins!", 240, 180);
+            repaint();
         }
     }
 
@@ -374,6 +393,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private void spawnPowerUp() {
         Timer powerUpTimer = new Timer(10000, e -> {
+            if (gameEnded) return;
             int randomX = (int) (Math.random() * 500) + 100; // Random x within panel width
             int randomY = (int) (Math.random() * 300) + 100; // Random y within panel height
             powerUp = new PowerUp(randomX, randomY, 50, 50, Color.GREEN); // Create PowerUp with random position
