@@ -4,11 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class MainMenu extends JPanel {
 
     private Ball ball;
     private Timer timer;
+
+    private Font font;
 
     private aiDifficulty difficulty;
 
@@ -26,20 +30,27 @@ public class MainMenu extends JPanel {
         });
         timer.start();
 
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/MedodicaRegular.otf")).deriveFont(82f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            font = new Font("Courier New", Font.PLAIN, 82); // Fallback font
+        }
+
         JLabel title = new JLabel("Pong Game");
         title.setAlignmentX(CENTER_ALIGNMENT);
-        title.setFont(new Font("Arial", Font.BOLD, 48));
+        title.setFont(font);
         title.setForeground(Color.WHITE);
-        add(Box.createVerticalStrut(50));
+        add(Box.createVerticalStrut(100));
         add(title);
 
         JLabel author = new JLabel("Created by Chat Enjoyers");
         author.setAlignmentX(CENTER_ALIGNMENT);
-        author.setFont(new Font("Arial", Font.ITALIC, 18));
+        author.setFont(font.deriveFont(24f));
         author.setForeground(Color.GRAY);
         add(author);
 
-        add(Box.createVerticalStrut(100));
+        add(Box.createVerticalStrut(50));
 
         createButtons(frame);
     }
@@ -51,11 +62,11 @@ public class MainMenu extends JPanel {
         playButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
         playButtonsPanel.setOpaque(false);
 
-        JButton playWithComputerButton = new JButton("Play with Computer");
-        JButton play1v1Button = new JButton("1v1");
-        JButton settingsButton = new JButton("Settings");
-        JButton statsButton = new JButton("Statistics");
-        JButton quitButton = new JButton("Quit");
+        TextButton playWithComputerButton = new TextButton("1 Player");
+        TextButton play1v1Button = new TextButton("2 Player");
+        TextButton settingsButton = new TextButton("Settings");
+        TextButton statsButton = new TextButton("Statistics");
+        TextButton quitButton = new TextButton("Quit");
 
         settingsButton.setAlignmentX(CENTER_ALIGNMENT);
         statsButton.setAlignmentX(CENTER_ALIGNMENT);
