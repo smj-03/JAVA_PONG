@@ -36,9 +36,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private int user1Score, user2Score;
 
-    private JButton stopButton;
+    private ImageButton stopButton;
     private final JButton playAgainButton; // pole w klasie Game
-    private final JButton returnToMenuButton;
+    private final ImageButton returnToMenuButton;
 
     private boolean vsAI;
 
@@ -65,11 +65,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor);
         // Initial position and speed of the ball
         // Create and configure the stop button
-        stopButton = new JButton(new ImageIcon(imagesPath + "stopbutton.png"));
-        stopButton.setBounds(360, 10, 64, 64); // Position the button
-        stopButton.setBorderPainted(false);
-        stopButton.setFocusPainted(false);
-        stopButton.setContentAreaFilled(false);
+        stopButton = new ImageButton(imagesPath + "stopbutton.png", 360, 10);
         stopButton.addActionListener(e -> {
             toggleGameState();
             requestFocusInWindow();
@@ -96,12 +92,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         add(playAgainButton); // Add the button to the panel
 
         // create and configure the return to menu button
-        returnToMenuButton = new JButton(new ImageIcon(imagesPath + "menubutton.png"));
-        returnToMenuButton.setBounds(272, 156, 256, 256);
+        returnToMenuButton = new ImageButton(imagesPath + "menubutton.png", 272, 156);
         returnToMenuButton.setVisible(false);
-        returnToMenuButton.setBorderPainted(false);
-        returnToMenuButton.setFocusPainted(false);
-        returnToMenuButton.setContentAreaFilled(false);
         returnToMenuButton.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             MainMenu menuPanel = new MainMenu(topFrame);
