@@ -47,15 +47,16 @@ public class Game extends JPanel implements Runnable, KeyListener {
         addKeyListener(this); // Add key listener to handle key events
 
         // Create paddles for players
-        user1Paddle = new Paddle(10, 200, 15, 150, Color.BLUE);
-        user2Paddle = new Paddle(760, 200, 15, 150, Color.BLUE);
+        user1Paddle = new Paddle(10, 200, Settings.paddleWidth, Settings.paddleHeight, Settings.paddleColor);
+        user2Paddle = new Paddle(760, 200, Settings.paddleWidth, Settings.paddleHeight, Settings.paddleColor);
 
         // Initialize scores for both players
         user1Score = 0;
         user2Score = 0;
 
         // Create a ball
-        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
+        ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor);
+        // Initial position and speed of the ball
         // Create and configure the stop button
         stopButton = new JButton("Stop Game");
         stopButton.setBounds(350, 10, 100, 30); // Position the button
@@ -263,7 +264,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             e.printStackTrace();
         }
         // Reset game state for a new game
-        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Reset ball position and speed
+        ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor); // Reset ball position and speed
     }
 
     @Override
