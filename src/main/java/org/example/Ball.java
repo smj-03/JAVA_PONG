@@ -25,8 +25,7 @@ public class Ball extends Object {
         ySpeed = -ySpeed;
     }
 
-    // TODO: CHANGE THE LOGIC IF VIEWPORT IS SET
-    public void bounceOffWalls(int top, int bottom) {
+    public void bounceOffWalls(int top, int bottom, boolean isViewportSet) {
         //if the y value is at the bottom of the screen
         if (y > 540) {
             reverseYDirection();
@@ -35,6 +34,17 @@ public class Ball extends Object {
         else if (y < 0) {
             reverseYDirection();
         }
+        if (isViewportSet) {
+            //if the x value is at the right side of the screen
+            if (x > 770) {
+                reverseXDirection();
+            }
+            //if the x value is at the left side of the screen
+            else if (x < 0) {
+                reverseXDirection();
+            }
+        }
+
 
     }
 

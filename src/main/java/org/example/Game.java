@@ -172,7 +172,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             repaint();    // Game rendering
 
             ball.move(); // Move the ball
-            ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
+            ball.bounceOffWalls(0, getHeight(), false); // Bounce the ball off the walls
             if (user1Paddle.intersects(ball)) {
                 lastHitPaddle = user1Paddle;
                 willHitPaddle = user2Paddle;
