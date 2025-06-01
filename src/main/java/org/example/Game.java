@@ -15,7 +15,10 @@ import java.io.IOException;
 public class Game extends JPanel implements Runnable, KeyListener {
     private Thread gameThread;
     private boolean running = false;
-    private final Paddle user1Paddle, user2Paddle;
+    private final Paddle user1Paddle;
+    private final Paddle user2Paddle;
+    private Paddle lastHitPaddle;
+    private Paddle willHitPaddle;
 
     private boolean upPressedPaddle1 = false;
     private boolean downPressedPaddle1 = false;
@@ -27,11 +30,13 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private Ball ball;
 
+    private PowerUp powerUp;
+
     private int user1Score, user2Score;
 
-    private JButton stopButton;
-    private JButton playAgainButton; // pole w klasie Game
-    private JButton returnToMenuButton;
+    private final JButton stopButton;
+    private final JButton playAgainButton; // pole w klasie Game
+    private final JButton returnToMenuButton;
 
     private boolean vsAI;
 
@@ -60,14 +65,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Create and configure the stop button
         stopButton = new JButton("Stop Game");
         stopButton.setBounds(350, 10, 100, 30); // Position the button
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleGameState();
-                requestFocusInWindow();
-            }
+        stopButton.addActionListener(e -> {
+            toggleGameState();
+            requestFocusInWindow();
         });
         add(stopButton); // Add the button to the panel
+
 
         playAgainButton = new JButton("Play Again");
         playAgainButton.setBounds(350, 10, 100, 30); // Position the button
@@ -98,6 +101,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
             topFrame.revalidate();
         });
         add(returnToMenuButton);
+
+        spawnPowerUp();
     }
 
     public void startGame() {
@@ -117,6 +122,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             e.printStackTrace(); // Handle interruption exception
         }
     }
+
     public void endGame() {
         running = false; // Zatrzymaj pętlę gry
         resetGame();
@@ -126,11 +132,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         stopButton.setVisible(false);
         StatisticsData stats = loadStatsFromJson();
         stats.gamesPlayed++; // Zwiększ liczbę rozegranych gier
-        if (vsAI){
+        if (vsAI) {
             if (stats != null) {
                 // Aktualizuj statystyki na podstawie wyniku
                 if (user1Score > user2Score) {
-                    if(aiDifficulty == aiDifficulty.EASY) {
+                    if (aiDifficulty == aiDifficulty.EASY) {
                         stats.easyWins++;
                     } else if (aiDifficulty == aiDifficulty.MEDIUM) {
                         stats.mediumWins++;
@@ -138,7 +144,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
                         stats.hardWins++;
                     }
                 } else {
-                    if(aiDifficulty == aiDifficulty.EASY) {
+                    if (aiDifficulty == aiDifficulty.EASY) {
                         stats.easyLosses++;
                     } else if (aiDifficulty == aiDifficulty.MEDIUM) {
                         stats.mediumLosses++;
@@ -156,28 +162,36 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
         // Pokaż wynik i zresetuj stan gry
         JOptionPane.showMessageDialog(this, "Game Over! Final Score: Player 1 - " + user1Score + ", Player 2 - " + user2Score);
-
     }
+
     @Override
     public void run() {
         // game loop
         while (running) {
             updateGame(); // Update game state
             repaint();    // Game rendering
+
             ball.move(); // Move the ball
             ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
             if (user1Paddle.intersects(ball)) {
+                lastHitPaddle = user1Paddle;
+                willHitPaddle = user2Paddle;
                 ball.bounceFromPaddle(user1Paddle); // Bounce the ball off player 1's paddle
             }
 
             if (user2Paddle.intersects(ball)) {
+                lastHitPaddle = user2Paddle;
+                willHitPaddle = user1Paddle;
                 ball.bounceFromPaddle(user2Paddle); // Bounce the ball off player 2's paddle
             }
+
+            if (powerUp != null && powerUp.intersects(ball)) applyPowerUp();
+
             // Check for scoring conditions
             if (ball.getX() < 0) { // Ball went out on player 2's side
                 user2Score++; // Increment player 2's score
                 resetGame(); // Reset the game after scoring
-            } else if (ball.getX() + ball.getDiameter() > getWidth()) { // Ball went out on player 1's side
+            } else if (ball.getX() + ball.getWidth() > getWidth()) { // Ball went out on player 1's side
                 user1Score++; // Increment player 1's score
                 resetGame(); // Reset the game after scoring
             }
@@ -208,17 +222,16 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     private void updateGame() {
-
         if (upPressedPaddle1) {
-            user1Paddle.move(user1Paddle.getY() - 5, getHeight()); // move up player 1
+            user1Paddle.moveYWithinBounds(user1Paddle.getY() - 5, getHeight()); // move up player 1
         }
         if (downPressedPaddle1) {
-            user1Paddle.move(user1Paddle.getY() + 5, getHeight()); // move down player 1
+            user1Paddle.moveYWithinBounds(user1Paddle.getY() + 5, getHeight()); // move down player 1
         }
 
         if (vsAI) {
             int paddleCenter = user2Paddle.getY() + user2Paddle.getHeight() / 2;
-            int ballCenter = ball.getY() + ball.getDiameter() / 2;
+            int ballCenter = ball.getY() + ball.getHeight() / 2;
             int dy = ballCenter - paddleCenter;
 
             int deadZone = 20; // dead zone for AI paddle movement
@@ -241,26 +254,29 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
             if (Math.abs(dy) > deadZone) {
                 int direction = (dy > 0) ? 1 : -1;
-                user2Paddle.move(user2Paddle.getY() + direction * speed, getHeight());
+                user2Paddle.moveYWithinBounds(user2Paddle.getY() + direction * speed, getHeight());
             }
-        }
-        else{
+        } else {
             if (upPressedPaddle2) {
-                user2Paddle.move(user2Paddle.getY() - 5, getHeight()); // move up player 2
+                user2Paddle.moveYWithinBounds(user2Paddle.getY() - 5, getHeight()); // move up player 2
             }
             if (downPressedPaddle2) {
-                user2Paddle.move(user2Paddle.getY() + 5, getHeight()); // move down player 2
+                user2Paddle.moveYWithinBounds(user2Paddle.getY() + 5, getHeight()); // move down player 2
             }
         }
 
     }
 
     public void resetGame() {
+        lastHitPaddle = null;
+        willHitPaddle = null;
+        user1Paddle.resetLength();
+        user2Paddle.resetLength();
+
         //pause for a second
-        try{
+        try {
             Thread.sleep(1000);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // Reset game state for a new game
@@ -324,11 +340,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
         g.fillRect(0, 0, getWidth(), getHeight()); // Fill background with black color
 
         //Draw paddles
-        user1Paddle.paint(g);
-        user2Paddle.paint(g);
+        user1Paddle.draw(g);
+        user2Paddle.draw(g);
 
         // Draw the ball
-        ball.paint(g);
+        ball.draw(g);
+
 
         // Draw scores
         g.setColor(Color.WHITE);
@@ -336,6 +353,35 @@ public class Game extends JPanel implements Runnable, KeyListener {
         g.drawString("Player 1: " + user1Score, 50, 30); // Draw player 1's score
         g.drawString("Player 2: " + user2Score, getWidth() - 150, 30); // Draw player 2's score
 
+        if (powerUp != null) {
+            powerUp.draw(g);
+        }
+    }
+
+    private void applyPowerUp() {
+        int number = (int) (Math.random() * 2) + 1;
+        switch (number) {
+            case 1:
+                PowerUp.changePaddleLength(lastHitPaddle, 100);
+                break;
+            case 2:
+                PowerUp.changePaddleLength(willHitPaddle, -100);
+                break;
+        }
+
+        powerUp = null; // Remove the power-upi
+        spawnPowerUp();
+    }
+
+    private void spawnPowerUp() {
+        Timer powerUpTimer = new Timer(10000, e -> {
+            int randomX = (int) (Math.random() * 500) + 100; // Random x within panel width
+            int randomY = (int) (Math.random() * 300) + 100; // Random y within panel height
+            powerUp = new PowerUp(randomX, randomY, 50, 50, Color.GREEN); // Create PowerUp with random position
+            repaint();
+        });
+        powerUpTimer.setRepeats(false); // Ensure the timer runs only once
+        powerUpTimer.start();
     }
 
     private StatisticsData loadStatsFromJson() {
