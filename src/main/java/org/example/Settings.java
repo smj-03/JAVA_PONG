@@ -28,7 +28,7 @@ public class Settings {
      * Wczytuje plik config.properties (jeśli istnieje) i ustawia wartości w polach statycznych.
      * Jeśli coś się nie powiedzie, pozostawia domyślne wartości.
      */
-    private static void loadProperties() {
+    static void loadProperties() {
         Properties props = new Properties();
         File plik = new File(CONFIG_FILE);
         if (!plik.exists()) {
