@@ -208,7 +208,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             }
 
             // check end game conditions
-            if (user1Score >= 1 || user2Score >= 1) { // Example condition for ending the game
+            if (user1Score >= 5 || user2Score >= 5) { // Example condition for ending the game
                 running = false; // Stop the game loop
                 endGame();
             }
@@ -396,7 +396,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             if (gameEnded) return;
             int randomX = (int) (Math.random() * 500) + 100; // Random x within panel width
             int randomY = (int) (Math.random() * 300) + 100; // Random y within panel height
-            powerUp = new PowerUp(randomX, randomY, 50, 50, Color.GREEN); // Create PowerUp with random position
+            powerUp = new PowerUp(randomX, randomY, imagesPath + "powerupSprite.png"); // Create PowerUp with random position
             repaint();
         });
         powerUpTimer.setRepeats(false); // Ensure the timer runs only once

@@ -4,14 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PowerUp extends Object {
-    public PowerUp(int x, int y, int width, int height, Color color) {
-        super(x, y, width, height, color);
+    private Image sprite;
+
+    public PowerUp(int x, int y, String spritePath) {
+        super(x, y, 50, 50, Color.WHITE);
+        this.sprite = new ImageIcon(spritePath).getImage();
     }
 
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillRect(x, y, width, height);
+        g.drawImage(sprite, x, y, width, height, null);
     }
 
     @Override
