@@ -6,15 +6,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import com.google.gson.Gson;
 
+ //Panel wywwietlający statystyki rozegranych gier.
+ //Dziedziczy po `MainMenu`, dzieki czemu korzysta z gotowego ukladu graficznego i stylu tla.
 public class Stats extends MainMenu{
 
-    private final MainMenu parent;
-    public Stats(JFrame frame, MainMenu parent) {
+    private final MainMenu parent;// Przechowywanie referencji do oryginalnego menu glownego
+     //konstruktor
+     public Stats(JFrame frame, MainMenu parent) {
         super(frame);
         this.parent = parent;
-        showStats();
+        showStats();//wyswietlanie statystyk
     }
 
+    //otwieranie pobieranych danych z pliku i estetyczny wglad w interfejsie
     private void showStats() {
         StatisticsData stats = loadStatsFromJson();
         String statsText;
@@ -41,7 +45,7 @@ public class Stats extends MainMenu{
 
         // Pomocniczy panel do centrowania
         JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        centerPanel.setOpaque(false); // przezroczysty, by nie zakrywał tła
+        centerPanel.setOpaque(false); // przezroczysty, by nie zakrywal tła
         centerPanel.add(statsLabel);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -50,6 +54,7 @@ public class Stats extends MainMenu{
         add(Box.createVerticalGlue());
     }
 
+    //Wczytuje dane statystyk z pliku JSON przy pomocy biblioteki Gson
     private StatisticsData loadStatsFromJson() {
         try (FileReader reader = new FileReader("src/main/resources/stats.json")) {
             return new Gson().fromJson(reader, StatisticsData.class);
@@ -57,6 +62,7 @@ public class Stats extends MainMenu{
             return null;
         }
     }
+    //przycisk "Back" powrotu do menu
     @Override
     protected void createButtons(JFrame frame) {
         JButton backButton = new JButton("Back");

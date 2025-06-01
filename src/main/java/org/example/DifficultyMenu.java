@@ -3,15 +3,19 @@ package org.example;
 import javax.swing.*;
 import java.awt.*;
 
+//Panel wyboru poziomu trudnosci gry dziedziczy po MainMenu.
 public class DifficultyMenu extends MainMenu {
 
+    // Referencja do menu glownego, potrzebna do powrotu po kliknieciu "Back"
     private final MainMenu parent;
 
+    //konstruktor
     public DifficultyMenu(JFrame frame, MainMenu parent) {
         super(frame);
         this.parent = parent;
     }
 
+    //tworzenie i dodawanie przyciskow do panelu
     @Override
     protected void createButtons(JFrame frame) {
         JButton easyButton = new JButton("Easy");
@@ -19,7 +23,7 @@ public class DifficultyMenu extends MainMenu {
         JButton hardButton = new JButton("Hard");
         JButton backButton = new JButton("Back");
 
-        Dimension buttonSize = new Dimension(200, 40);
+        Dimension buttonSize = new Dimension(200, 40);//wspolny rozmiar
         for (JButton b : new JButton[]{easyButton, mediumButton, hardButton, backButton}) {
             b.setMaximumSize(buttonSize);
             b.setAlignmentX(CENTER_ALIGNMENT);
@@ -27,6 +31,7 @@ public class DifficultyMenu extends MainMenu {
             add(b);
         }
 
+        //Obsluga klikniec przyciskow uruchamiajacych gre z wybrana trudnoscia
         easyButton.addActionListener(e -> startGame(frame, aiDifficulty.EASY));
         mediumButton.addActionListener(e -> startGame(frame, aiDifficulty.MEDIUM));
         hardButton.addActionListener(e -> startGame(frame, aiDifficulty.HARD));
@@ -36,7 +41,7 @@ public class DifficultyMenu extends MainMenu {
             parent.resumeAnimation();
         });
     }
-
+    //Metoda pomocnicza do uruchomienia gry z wybranym poziomem trudnosci
     private void startGame(JFrame frame, aiDifficulty difficulty) {
         Game gamePanel = new Game(true, difficulty);
         frame.setContentPane(gamePanel);
