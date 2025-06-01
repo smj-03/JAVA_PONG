@@ -35,6 +35,35 @@ public class Ball extends Object {
         else if (y < 0) {
             reverseYDirection();
         }
+
+    }
+
+    public void bounceFromPaddle(Paddle paddle) {
+        reverseXDirection(); // zmiana kierunku w poziomie
+
+        int paddleCenter = paddle.getY() + paddle.getHeight() / 2;
+        int ballCenter = y + height / 2;
+        int relativeY = ballCenter - paddleCenter;
+
+        // Ustal maksymalną prędkość i maksymalny Y-kąt odbicia
+        int maxSpeed = 12;
+        int maxYSpeed = 7; // ustal maksymalny sensowny kąt odbicia
+
+        // Skaluj prędkość y na podstawie miejsca trafienia, ale ogranicz do maxYSpeed
+        ySpeed = relativeY / 5;
+        if (ySpeed > maxYSpeed) ySpeed = maxYSpeed;
+        if (ySpeed < -maxYSpeed) ySpeed = -maxYSpeed;
+
+        // Zapobiegaj zbyt płaskiemu odbiciu (0)
+        if (ySpeed == 0) {
+            ySpeed = (Math.random() > 0.5) ? 1 : -1;
+        }
+
+        // Zwiększ prędkość x, ale nie przekraczaj maxSpeed
+        xSpeed += (xSpeed > 0) ? 1 : -1;
+        if (Math.abs(xSpeed) > maxSpeed) {
+            xSpeed = (xSpeed > 0) ? maxSpeed : -maxSpeed;
+        }
     }
 
     @Override
