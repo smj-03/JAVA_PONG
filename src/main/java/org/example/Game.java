@@ -182,8 +182,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
             updateGame(); // aktualizacja stanu paletek
             repaint();    // renderowanie gry, paintComponent() w celu odrysowania ekranu
 
+
             ball.move(); // ruch pilki
-            ball.bounceOffWalls(0, getHeight()); // odbicie pilki od gornej i dolnej krawedzi
+            ball.bounceOffWalls(0, getHeight(), false); // odbicie pilki od gornej i dolnej krawedzi
             //sprawdzanie kolizji pilka paletka dla gracza 1
             if (user1Paddle.intersects(ball)) {
                 lastHitPaddle = user1Paddle;

@@ -30,9 +30,9 @@ public class Ball extends Object {
         ySpeed = -ySpeed;
     }
 
-    // TODO: CHANGE THE LOGIC IF VIEWPORT IS SET
+
     //odbijanie pilki od gornej i dolnej granicy
-    public void bounceOffWalls(int top, int bottom) {
+    public void bounceOffWalls(int top, int bottom, boolean isViewportSet) {
         //jezeli pilka jest ponizej dolnej krawedzi odwracamy kierunek
         if (y > 540) { //wymiary ekranu w grze sa narzucone wiec mozemy uzyc "sztywnej wartosci"
             reverseYDirection();
@@ -41,6 +41,17 @@ public class Ball extends Object {
         else if (y < 0) {
             reverseYDirection();
         }
+        if (isViewportSet) {
+            //if the x value is at the right side of the screen
+            if (x > 770) {
+                reverseXDirection();
+            }
+            //if the x value is at the left side of the screen
+            else if (x < 0) {
+                reverseXDirection();
+            }
+        }
+
 
     }
     //odbijanie pilki od paletki

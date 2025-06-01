@@ -22,8 +22,10 @@ public class Settings {
         // W bloku statycznym od razu ladujemy plik konfiguracji
         loadProperties();
     }
+
 //Wczytuje plik config.properties (jesli istnieje) i ustawia wartosci w polach statycznych.
 //Jesli cos sie nie powiedzie, pozostawia domyslne wartosci
+
     static void loadProperties() {
         Properties props = new Properties();
         File plik = new File(CONFIG_FILE);

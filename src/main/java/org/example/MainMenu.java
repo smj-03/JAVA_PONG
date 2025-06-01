@@ -23,7 +23,7 @@ public class MainMenu extends JPanel {
         //co 16 sekund rysuje pilke i odbija ja od sciany menu
         timer = new Timer(16, e -> {
             ball.move();
-            ball.bounceOffWalls(0, getHeight());
+            ball.bounceOffWalls(0, getHeight(), true); // Assuming no viewport is set
             repaint();
         });
         timer.start();
