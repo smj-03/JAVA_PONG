@@ -21,7 +21,7 @@ public class MainMenu extends JPanel {
 
         timer = new Timer(16, e -> {
             ball.move();
-            ball.bounceOffWalls(0, getHeight());
+            ball.bounceOffWalls(0, getHeight(), true); // Assuming no viewport is set
             repaint();
         });
         timer.start();
