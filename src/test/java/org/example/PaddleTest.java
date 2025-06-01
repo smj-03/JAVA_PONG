@@ -1,7 +1,9 @@
 package org.example;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.awt.Color;
+
 import org.junit.jupiter.api.Test;
 
 class PaddleTest {
@@ -14,14 +16,16 @@ class PaddleTest {
         int initialY = paddle.getY();
         int initialHeight = paddle.getHeight();
 
-        paddle.changeHeightByPercentage(10);
-        // Nowa wysokość: 20 + 10 = 30
-        assertEquals(30, paddle.getHeight(),
-                "Po changeLengthBy(10) paddleHeight powinno być 30");
+        // Podwajamy wysokość (procent = 2.0f)
+        paddle.changeHeightByPercentage(2.0f);
 
-        // y przesuwa się o połowę przyrostu w górę: y = 100 - (10/2) = 95
-        assertEquals(initialY - 5, paddle.getY(),
-                "Po zwiększeniu długości paletki y powinno przesunąć się o 5 w górę (100->95)");
+        // Nowa wysokość powinna wynosić 40 (20 * 2.0)
+        assertEquals(40, paddle.getHeight(),
+                "Po changeHeightByPercentage(2.0) wysokość paletki powinna zostać podwojona do 40");
+
+        // y powinno przesunąć się o połowę zmiany wysokości: (40 - 20) / 2 = 10
+        assertEquals(initialY - 10, paddle.getY(),
+                "Po zwiększeniu wysokości paletki y powinno przesunąć się o połowę zmiany wysokości (10 jednostek w górę)");
     }
 
     @Test
@@ -30,20 +34,20 @@ class PaddleTest {
         int initY = paddle.getY();      // 200
         int initHeight = paddle.getHeight(); // 40
 
-        // najpierw zmieniamy długość, np. o +20
-        paddle.changeHeightByPercentage(20);
-        assertEquals(60, paddle.getHeight(),
-                "Po changeLengthBy(20) wysokość = 60");
-        // y zmieniło się z 200 na 200 - 10 = 190 (ponieważ length/2 = 10)
-        assertEquals(190, paddle.getY());
+        // Najpierw zmieniamy wysokość, np. na połowę (procent = 0.5f)
+        paddle.changeHeightByPercentage(0.5f);
+        assertEquals(20, paddle.getHeight(),
+                "Po changeHeightByPercentage(0.5) wysokość powinna wynosić 20");
+        // y zmieniło się z 200 na 200 + (40 - 20) / 2 = 210 (ponieważ height zmniejszyło się o połowę)
+        assertEquals(210, paddle.getY(),
+                "Po zmniejszeniu wysokości paletki y powinno przesunąć się o połowę zmiany wysokości (10 jednostek w dół)");
 
         // Teraz resetLength()
         paddle.resetLength();
         assertEquals(initHeight, paddle.getHeight(),
                 "Po resetLength() wysokość powinna wrócić do początkowych 40");
         // Pozycja y: kod w resetLength robi:
-        // y += (height - initialLength)/2  (gdzie height=i teraz=initialLength=40 -> y+=0)
-        // a następnie height=initialLength
+        // y += (height - initialLength) / 2  (gdzie height=20, initialLength=40 -> y+=-10)
         // Czyli y wróci dokładnie do 200.
         assertEquals(initY, paddle.getY(),
                 "Po resetLength() pozycja y powinna wrócić do oryginalnego 200");
