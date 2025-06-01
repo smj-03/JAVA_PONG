@@ -2,21 +2,26 @@ package org.example;
 
 import java.awt.*;
 
+//klasa ball reprezentuje pilke dziedziczy po Object-klasie abstrakcyjnej
+// zapewniajacej pozycje, wymiar kolor itp.
 public class Ball extends Object {
-    private int xSpeed, ySpeed;
-
+    private int xSpeed, ySpeed; //predkosc pilki
+    //konstruktor pilki
     public Ball(int x, int y, int diameter, int xSpeed, int ySpeed, Color color) {
         super(x, y, diameter, diameter, color);
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
     }
 
-    @Override
+    //implementacja metody abstrakcyjnej z klasy object
+    //przesuwa pilke zgodnie z jej predkosciami w osi x i y
+    @Override//nadpisanie metody
     public void move() {
         x += xSpeed;
         y += ySpeed;
     }
 
+    //odwracanie kierunku ruchu pilki
     public void reverseXDirection() {
         xSpeed = -xSpeed;
     }
@@ -26,23 +31,26 @@ public class Ball extends Object {
     }
 
     // TODO: CHANGE THE LOGIC IF VIEWPORT IS SET
+    //odbijanie pilki od gornej i dolnej granicy
     public void bounceOffWalls(int top, int bottom) {
-        //if the y value is at the bottom of the screen
-        if (y > 540) {
+        //jezeli pilka jest ponizej dolnej krawedzi odwracamy kierunek
+        if (y > 540) { //wymiary ekranu w grze sa narzucone wiec mozemy uzyc "sztywnej wartosci"
             reverseYDirection();
         }
-        //if y value is at top of screen
+        //analogicznie dla gornej krawedzi ekranu
         else if (y < 0) {
             reverseYDirection();
         }
 
     }
-
+    //odbijanie pilki od paletki
     public void bounceFromPaddle(Paddle paddle) {
         reverseXDirection(); // zmiana kierunku w poziomie
 
+        //wyliczamy srodek  pilki i paletki
         int paddleCenter = paddle.getY() + paddle.getHeight() / 2;
         int ballCenter = y + height / 2;
+        //roznica miedzy srodkiem pilki i paletki
         int relativeY = ballCenter - paddleCenter;
 
         // Ustal maksymalną prędkość i maksymalny Y-kąt odbicia
@@ -66,6 +74,7 @@ public class Ball extends Object {
         }
     }
 
+    //rysowanie pilki metoda z klasy abstrakcyjnej object
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
