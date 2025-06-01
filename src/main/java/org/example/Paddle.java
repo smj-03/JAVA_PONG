@@ -2,51 +2,31 @@ package org.example;
 
 import java.awt.*;
 
-public class Paddle {
-    private int x, y, speed; // position of the paddle
-    private final int width, height; // dimensions of the paddle
-    private final Color color; // color of the paddle
+public class Paddle extends Object {
+    private int initialLength;
 
     public Paddle(int x, int y, int width, int height, Color color) {
-        this.x = x; // x position of the paddle
-        this.y = y; // y position of the paddle
-        this.width = width; // width of the paddle
-        this.height = height; // height of the paddle
-        this.color = color; // color of the paddle
+        super(x, y, width, height, color);
+        this.initialLength = height;
     }
 
-    public void paint(Graphics g) {
-        //paint the rectangle for the paddle
+    public void changeLengthBy(int length) {
+        height += length;
+        y -= length / 2;
+    }
+
+    public void resetLength() {
+        y += (height - initialLength) / 2; // Adjust the position to center the paddle
+        height = initialLength; // Reset the height to the initial value
+    }
+
+    @Override
+    public void draw(Graphics g) {
         g.setColor(color);
         g.fillRect(x, y, width, height);
-
     }
 
-    public int getX() {
-        return x; // return the x position of the paddle
-    }
-
-    public int getY() {
-        return y; // return the y position of the paddle
-    }
-
-    public int getHeight() {
-        return height; // return the height of the paddle
-    }
-
-    public void move(int newY, int panelHeight) {
-        this.y = newY; // update the y position of the paddle
-        if (this.y < 0) {
-            this.y = 0; // prevent paddle from going above the top edge
-        }
-        if (this.y + height > panelHeight) { // assuming the height of the game area is 600
-            this.y = panelHeight - height; // prevent paddle from going below the bottom edge
-        }
-    }
-
-    public boolean intersects(Ball ball) {
-        // Check if the paddle intersects with the ball
-        return (ball.getX() < x + width && ball.getX() + ball.getDiameter() > x &&
-                ball.getY() < y + height && ball.getY() + ball.getDiameter() > y);
+    @Override
+    public void move() {
     }
 }

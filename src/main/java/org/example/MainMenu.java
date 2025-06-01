@@ -124,6 +124,6 @@ public class MainMenu extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ball.paint(g); // draw the ball in the background
+        ball.draw(g); // draw the ball in the background
     }
 }
