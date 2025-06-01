@@ -10,7 +10,9 @@ import java.awt.event.KeyListener;
 public class Game extends JPanel implements Runnable, KeyListener {
     private Thread gameThread;
     private boolean running = false;
-    private final Paddle user1Paddle, user2Paddle;
+    private final Paddle user1Paddle;
+    private final Paddle user2Paddle;
+    private Paddle lastHitPaddle;
 
     private boolean upPressedPaddle1 = false;
     private boolean downPressedPaddle1 = false;
@@ -21,6 +23,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private boolean escapePressed = false;
 
     private Ball ball;
+
+    private PowerUp powerUp;
 
     private int user1Score, user2Score;
 
@@ -54,6 +58,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
             }
         });
         add(stopButton); // Add the button to the panel
+
+        spawnPowerUp();
     }
 
     public void startGame() {
@@ -80,17 +86,41 @@ public class Game extends JPanel implements Runnable, KeyListener {
         while (running) {
             updateGame(); // Update game state
             repaint();    // Game rendering
+
             ball.move(); // Move the ball
             ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
-            if (user1Paddle.intersects(ball) || user2Paddle.intersects(ball)) {
-                ball.reverseXDirection(); // zmień kierunek ruchu piłki w poziomie
+
+            if (user1Paddle.intersects(ball)) {
+                lastHitPaddle = user1Paddle;
+                ball.reverseXDirection();
+            }
+
+            if (user2Paddle.intersects(ball)) {
+                lastHitPaddle = user2Paddle;
+                ball.reverseXDirection();
+            }
+
+            if (powerUp != null && powerUp.intersects(ball)) {
+
+                powerUp = null; // Remove the power-up
+
+                PowerUp.lengthenPaddle(lastHitPaddle);
+
+                Timer timer = new Timer(3000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        spawnPowerUp(); // Spawn a new PowerUp
+                    }
+                });
+                timer.setRepeats(false); // Ensure the timer runs only once
+                timer.start();
             }
 
             // Check for scoring conditions
             if (ball.getX() < 0) { // Ball went out on player 2's side
                 user2Score++; // Increment player 2's score
                 resetGame(); // Reset the game after scoring
-            } else if (ball.getX() + ball.getDiameter() > getWidth()) { // Ball went out on player 1's side
+            } else if (ball.getX() + ball.getWidth() > getWidth()) { // Ball went out on player 1's side
                 user1Score++; // Increment player 1's score
                 resetGame(); // Reset the game after scoring
             }
@@ -137,10 +167,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     public void resetGame() {
         //pause for a second
-        try{
+        try {
             Thread.sleep(1000);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // Reset game state for a new game
@@ -210,11 +239,23 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Draw the ball
         ball.draw(g);
 
+
         // Draw scores
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 24)); // Set font for the score
         g.drawString("Player 1: " + user1Score, 50, 30); // Draw player 1's score
         g.drawString("Player 2: " + user2Score, getWidth() - 150, 30); // Draw player 2's score
 
+        if (powerUp != null) {
+            powerUp.draw(g);
+        }
+    }
+
+    public void spawnPowerUp() {
+        // FIXME X Y SPAWNING
+        int randomX = (int) (Math.random() * 600) + 100; // Random x within panel width
+        int randomY = (int) (Math.random() * 400) + 100; // Random y within panel height
+        powerUp = new PowerUp(400, 300, 100, Color.GREEN); // Create PowerUp with random position
+        repaint();
     }
 }

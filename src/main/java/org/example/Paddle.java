@@ -9,11 +9,13 @@ public class Paddle extends Object {
         super(x, y, width, height, color);
     }
 
+    @Override
     public void draw(Graphics g) {
         g.setColor(color);
         g.fillRect(x, y, width, height);
     }
 
+    @Override
     public void move() {
     }
 }

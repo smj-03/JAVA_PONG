@@ -3,16 +3,15 @@ package org.example;
 import java.awt.*;
 
 public class Ball extends Object {
-    private int diameter;
     private int xSpeed, ySpeed;
 
     public Ball(int x, int y, int diameter, int xSpeed, int ySpeed, Color color) {
         super(x, y, diameter, diameter, color);
-        this.diameter = diameter;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
     }
 
+    @Override
     public void move() {
         x += xSpeed;
         y += ySpeed;
@@ -24,14 +23,6 @@ public class Ball extends Object {
 
     public void reverseYDirection() {
         ySpeed = -ySpeed;
-    }
-
-    public void setDiameter(int d) {
-        diameter = d;
-    }
-
-    public int getDiameter() {
-        return diameter;
     }
 
     // TODO: CHANGE THE LOGIC IF VIEWPORT IS SET
@@ -46,8 +37,9 @@ public class Ball extends Object {
         }
     }
 
+    @Override
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillOval(x, y, diameter, diameter);
+        g.fillOval(x, y, width, height);
     }
 }
