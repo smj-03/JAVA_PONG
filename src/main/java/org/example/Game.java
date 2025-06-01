@@ -37,7 +37,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private int user1Score, user2Score;
 
     private ImageButton stopButton;
-    private final JButton playAgainButton; // pole w klasie Game
+    private final ImageButton playAgainButton; // pole w klasie Game
     private final ImageButton returnToMenuButton;
 
     private boolean vsAI;
@@ -73,8 +73,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         add(stopButton); // Add the button to the panel
 
 
-        playAgainButton = new JButton("Play Again");
-        playAgainButton.setBounds(350, 10, 100, 30); // Position the button
+        playAgainButton = new ImageButton(imagesPath + "playagainbutton.png", 336, 360);
         playAgainButton.setVisible(false);
         playAgainButton.addActionListener(new ActionListener() {
             @Override
@@ -161,7 +160,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             }
         }
         // Pokaż wynik i zresetuj stan gry
-        JOptionPane.showMessageDialog(this, "Game Over! Final Score: Player 1 - " + user1Score + ", Player 2 - " + user2Score);
+        // TODO: MESSAGE WHO WINS
     }
 
     @Override
