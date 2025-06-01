@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,13 +21,21 @@ public class Game extends JPanel implements Runnable, KeyListener {
     //czy gra uruchomiona
     private boolean running = false;
 
+    private boolean gameEnded = false;
+
+
     //Paletki graczy
+
     private final Paddle user1Paddle;
     private final Paddle user2Paddle;
     //Referencja do ostatniej paletki, ktora uderzyla pilke
     private Paddle lastHitPaddle;
     //Referencja do paletki, ktora bedzie następna uderzac pilke
     private Paddle willHitPaddle;
+
+
+    private String imagesPath = "src/main/resources/images/";
+
 
     // Flagi klawiszy dla sterowania paletkami(gracz 1: W i S)
     private boolean upPressedPaddle1 = false;
@@ -42,9 +51,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private PowerUp powerUp;
     private int user1Score, user2Score;
 
-    private final JButton stopButton;
-    private final JButton playAgainButton; // pole w klasie Game
-    private final JButton returnToMenuButton;
+    private ImageButton stopButton;
+    private final ImageButton playAgainButton; // pole w klasie Game
+    private final ImageButton returnToMenuButton;
+
+    private Font font;
 
     private boolean vsAI;
 
@@ -59,6 +70,14 @@ public class Game extends JPanel implements Runnable, KeyListener {
         requestFocusInWindow();
         addKeyListener(this); //key listener
 
+
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/MedodicaRegular.otf")).deriveFont(64f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            font = new Font("Courier New", Font.PLAIN, 64); // Fallback font
+        }
+
         // utworzenie paletek
         user1Paddle = new Paddle(10, 200, Settings.paddleWidth, Settings.paddleHeight, Settings.paddleColor);
         user2Paddle = new Paddle(760, 200, Settings.paddleWidth, Settings.paddleHeight, Settings.paddleColor);
@@ -69,9 +88,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         //tworzenie obiektu pilki
         ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor);
+
         // Tworzenie i konfiguracja przycisku "Stop Game"
-        stopButton = new JButton("Stop Game");
-        stopButton.setBounds(350, 10, 100, 30); // Position the button
+        stopButton = new ImageButton(imagesPath + "stopbutton.png", 360, 10);
+
+        
+
         stopButton.addActionListener(e -> {
             toggleGameState();
             requestFocusInWindow();
@@ -79,8 +101,10 @@ public class Game extends JPanel implements Runnable, KeyListener {
         add(stopButton);
 
         // Tworzenie i konfiguracja przycisku "Play Again" (ukryty na start)
-        playAgainButton = new JButton("Play Again");
-        playAgainButton.setBounds(350, 10, 100, 30); // Position the button
+        playAgainButton = new ImageButton(imagesPath + "playagainbutton.png", 336, 360);
+
+       
+
         playAgainButton.setVisible(false);
         playAgainButton.addActionListener(new ActionListener() {
 
@@ -98,9 +122,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
         });
         add(playAgainButton);
 
+
         //Tworzenie i konfiguracja przycisku "Return to Menu"
-        returnToMenuButton = new JButton("Return to Menu");
-        returnToMenuButton.setBounds(325, 50, 150, 30);
+        returnToMenuButton = new ImageButton(imagesPath + "menubutton.png", 272, 156);
+
+       
+
         returnToMenuButton.setVisible(false);
         returnToMenuButton.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -116,10 +143,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
     //Metoda uruchamiajaca gre
     public void startGame() {
         if (running) return;
+        gameEnded = false;
         running = true;
         requestFocusInWindow(); // fokus na klawiature
         gameThread = new Thread(this); // utworzenie watku gry
         gameThread.start(); // uruchomienie watku gry
+
     }
 
     //metoda zatrzymujaca gre
@@ -134,6 +163,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     public void endGame() {
         running = false; // Zatrzymaj pętlę gry
+        gameEnded = true;
         resetGame();
         // Opcjonalnie: pokaz przycisk powrotu do menu lub ponownego startu gry
         returnToMenuButton.setVisible(true);
@@ -169,8 +199,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 e.printStackTrace();
             }
         }
-        // Pokaż wynik i zresetuj stan gry
-        JOptionPane.showMessageDialog(this, "Game Over! Final Score: Player 1 - " + user1Score + ", Player 2 - " + user2Score);
     }
 
     //glowna petla gry
@@ -229,12 +257,14 @@ public class Game extends JPanel implements Runnable, KeyListener {
     //Aktualizuje takze tekst przycisku "Stop/Resume Game" i widocznosc przycisku "Return to Menu".
     private void toggleGameState() {
         if (running) {
-            stopGame();
-            stopButton.setText("Resume Game");
+
+            stopGame(); // Zatrzymaj gre
+            stopButton.setIcon(new ImageIcon(imagesPath + "resumebutton.png"));
             returnToMenuButton.setVisible(true);
         } else {
-            startGame();
-            stopButton.setText("Stop Game");
+            startGame(); // wznów gre
+            stopButton.setIcon(new ImageIcon(imagesPath + "stopbutton.png"));
+
             returnToMenuButton.setVisible(false);
         }
     }
@@ -287,11 +317,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
     //Metoda resetująca stan gry
     public void resetGame() {
-        lastHitPaddle = null;
-        willHitPaddle = null;
-        user1Paddle.resetLength();
-        user2Paddle.resetLength();
-
         //pause for a second
         try {
             Thread.sleep(1000);
@@ -300,6 +325,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
         // Reset game state for a new game
         ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor); // Reset ball position and speed
+
+        lastHitPaddle = null;
+        willHitPaddle = null;
+        user1Paddle.resetLength();
+        user2Paddle.resetLength();
     }
 
     //Metoda wywolywana przy nacisnieciu klawisza
@@ -369,12 +399,21 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         //rysowanie wynikow
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 24));
-        g.drawString("Player 1: " + user1Score, 50, 30);
-        g.drawString("Player 2: " + user2Score, getWidth() - 150, 30);
+
+        g.setFont(font); // Set font for the score
+        g.drawString(String.valueOf(user1Score), 280, 58); // Draw player 1's score
+        g.drawString(String.valueOf(user2Score), getWidth() - 300, 58); // Draw player 2's score
+
 
         if (powerUp != null) {
             powerUp.draw(g);
+        }
+
+        if (gameEnded) {
+            g.setColor(Color.WHITE);
+            int winner = user1Score > user2Score ? 1 : 2;
+            g.drawString("Player " + winner + " wins!", 240, 180);
+            repaint();
         }
     }
     //Metoda stosująca efekt power-upa po kolizji z piłką
@@ -396,9 +435,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
     //Metoda tworząca power-up losowo po upływie 10 sekund od ostatniego spawnu
     private void spawnPowerUp() {
         Timer powerUpTimer = new Timer(10000, e -> {
+            if (gameEnded) return;
             int randomX = (int) (Math.random() * 500) + 100;
-            int randomY = (int) (Math.random() * 300) + 100;
-            powerUp = new PowerUp(randomX, randomY, 50, 50, Color.GREEN);
+            int randomY = (int) (Math.random() * 300) + 100; 
+            powerUp = new PowerUp(randomX, randomY, imagesPath + "powerupSprite.png"); 
+
             repaint();
         });
         powerUpTimer.setRepeats(false);

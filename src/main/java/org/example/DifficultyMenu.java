@@ -18,13 +18,15 @@ public class DifficultyMenu extends MainMenu {
     //tworzenie i dodawanie przyciskow do panelu
     @Override
     protected void createButtons(JFrame frame) {
-        JButton easyButton = new JButton("Easy");
-        JButton mediumButton = new JButton("Medium");
-        JButton hardButton = new JButton("Hard");
-        JButton backButton = new JButton("Back");
+        TextButton easyButton = new TextButton("Easy");
+        TextButton mediumButton = new TextButton("Medium");
+        TextButton hardButton = new TextButton("Hard");
+        TextButton backButton = new TextButton("Back");
+
 
         Dimension buttonSize = new Dimension(200, 40);//wspolny rozmiar
-        for (JButton b : new JButton[]{easyButton, mediumButton, hardButton, backButton}) {
+        for (TextButton b : new TextButton[]{easyButton, mediumButton, hardButton, backButton}) {
+
             b.setMaximumSize(buttonSize);
             b.setAlignmentX(CENTER_ALIGNMENT);
             add(Box.createVerticalStrut(15));

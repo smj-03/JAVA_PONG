@@ -6,9 +6,13 @@ import java.awt.*;
 //klasa Powerup reprezentuje bonus dziedziczy po Object-klasie abstrakcyjnej
 // zapewniajacej pozycje, wymiar kolor itp.
 public class PowerUp extends Object {
+
+    private Image sprite;
     //konstruktor
-    public PowerUp(int x, int y, int width, int height, Color color) {
-        super(x, y, width, height, color);
+    public PowerUp(int x, int y, String spritePath) {
+        super(x, y, 50, 50, Color.WHITE);
+        this.sprite = new ImageIcon(spritePath).getImage();
+
     }
 
     //nadpisanie metod z klasy Object
@@ -16,7 +20,7 @@ public class PowerUp extends Object {
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillRect(x, y, width, height);
+        g.drawImage(sprite, x, y, width, height, null);
     }
 
     @Override

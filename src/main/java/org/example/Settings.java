@@ -13,7 +13,7 @@ public class Settings {
 
     // Domyslne wartosci (jeśli plik nie istnieje lub właściwość nie została określona)
     public static Color ballColor   = Color.WHITE;
-    public static Color paddleColor = Color.BLUE;
+    public static Color paddleColor = Color.WHITE;
     public static int ballSpeed     = 3;
     public static int paddleWidth   = 15;
     public static int paddleHeight  = 150;

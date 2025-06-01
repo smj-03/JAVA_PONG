@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 //Klasa MainMenu – ekran startowy gry PONG dziedziczy po JPanel potrzebny do tworzenia ekranu/interfejsu
 public class MainMenu extends JPanel {
@@ -11,6 +13,11 @@ public class MainMenu extends JPanel {
 
     private Ball ball;
     private Timer timer;
+
+
+    private Font font;
+
+    private aiDifficulty difficulty;
 
     //konstruktor menu
     public MainMenu(JFrame frame) {
@@ -28,22 +35,34 @@ public class MainMenu extends JPanel {
         });
         timer.start();
 
+
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/MedodicaRegular.otf")).deriveFont(82f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            font = new Font("Courier New", Font.PLAIN, 82); // Fallback font
+        }
+
+
         //tytul gry i ustawienia wizualne
         JLabel title = new JLabel("Pong Game");
         title.setAlignmentX(CENTER_ALIGNMENT);
-        title.setFont(new Font("Arial", Font.BOLD, 48));
+        title.setFont(font);
         title.setForeground(Color.WHITE);
-        add(Box.createVerticalStrut(50));
+        add(Box.createVerticalStrut(100));
         add(title);
         //podpis i ustawienia wizualne
         JLabel author = new JLabel("Created by Chat Enjoyers");
         author.setAlignmentX(CENTER_ALIGNMENT);
-        author.setFont(new Font("Arial", Font.ITALIC, 18));
+        author.setFont(font.deriveFont(24f));
         author.setForeground(Color.GRAY);
         add(author);
         add(Box.createVerticalStrut(100));//odstep
+      
+        add(Box.createVerticalStrut(50));
 
         createButtons(frame);//tworzenie przyciskow
+
     }
 
     protected void createButtons(JFrame frame) {
@@ -52,13 +71,13 @@ public class MainMenu extends JPanel {
         playButtonsPanel.setMaximumSize(new Dimension(520, 50));
         playButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
         playButtonsPanel.setOpaque(false);
-
-        //tworzenie przyciskow
-        JButton playWithComputerButton = new JButton("Play with Computer");
-        JButton play1v1Button = new JButton("1v1");
-        JButton settingsButton = new JButton("Settings");
-        JButton statsButton = new JButton("Statistics");
-        JButton quitButton = new JButton("Quit");
+      
+      //tworzenie przyciskow
+        TextButton playWithComputerButton = new TextButton("1 Player");
+        TextButton play1v1Button = new TextButton("2 Player");
+        TextButton settingsButton = new TextButton("Settings");
+        TextButton statsButton = new TextButton("Statistics");
+        TextButton quitButton = new TextButton("Quit");
 
         //wyrownianie przyciskow  do srodka ekranu
         settingsButton.setAlignmentX(CENTER_ALIGNMENT);
