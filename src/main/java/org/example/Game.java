@@ -20,6 +20,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private Paddle lastHitPaddle;
     private Paddle willHitPaddle;
 
+    private String imagesPath = "src/main/resources/images/";
+
     private boolean upPressedPaddle1 = false;
     private boolean downPressedPaddle1 = false;
 
@@ -34,7 +36,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private int user1Score, user2Score;
 
-    private final JButton stopButton;
+    private JButton stopButton;
     private final JButton playAgainButton; // pole w klasie Game
     private final JButton returnToMenuButton;
 
@@ -63,8 +65,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor);
         // Initial position and speed of the ball
         // Create and configure the stop button
-        stopButton = new JButton("Stop Game");
-        stopButton.setBounds(350, 10, 100, 30); // Position the button
+        stopButton = new JButton(new ImageIcon(imagesPath + "stopbutton.png"));
+        stopButton.setBounds(360, 10, 64, 64); // Position the button
+        stopButton.setBorderPainted(false);
+        stopButton.setFocusPainted(false);
+        stopButton.setContentAreaFilled(false);
         stopButton.addActionListener(e -> {
             toggleGameState();
             requestFocusInWindow();
@@ -91,9 +96,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
         add(playAgainButton); // Add the button to the panel
 
         // create and configure the return to menu button
-        returnToMenuButton = new JButton("Return to Menu");
-        returnToMenuButton.setBounds(325, 50, 150, 30);
+        returnToMenuButton = new JButton(new ImageIcon(imagesPath + "menubutton.png"));
+        returnToMenuButton.setBounds(272, 156, 256, 256);
         returnToMenuButton.setVisible(false);
+        returnToMenuButton.setBorderPainted(false);
+        returnToMenuButton.setFocusPainted(false);
+        returnToMenuButton.setContentAreaFilled(false);
         returnToMenuButton.addActionListener(e -> {
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             MainMenu menuPanel = new MainMenu(topFrame);
@@ -212,11 +220,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private void toggleGameState() {
         if (running) {
             stopGame(); // Stop the game
-            stopButton.setText("Resume Game"); // Change button text to "Resume Game"
+            stopButton.setIcon(new ImageIcon(imagesPath + "resumebutton.png"));
             returnToMenuButton.setVisible(true);
         } else {
             startGame(); // Resume the game
-            stopButton.setText("Stop Game"); // Change button text to "Stop Game"
+            stopButton.setIcon(new ImageIcon(imagesPath + "stopbutton.png"));
             returnToMenuButton.setVisible(false);
         }
     }
@@ -268,11 +276,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     public void resetGame() {
-        lastHitPaddle = null;
-        willHitPaddle = null;
-        user1Paddle.resetLength();
-        user2Paddle.resetLength();
-
         //pause for a second
         try {
             Thread.sleep(1000);
@@ -281,6 +284,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
         // Reset game state for a new game
         ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor); // Reset ball position and speed
+
+        lastHitPaddle = null;
+        willHitPaddle = null;
+        user1Paddle.resetLength();
+        user2Paddle.resetLength();
     }
 
     @Override
@@ -350,8 +358,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Draw scores
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 24)); // Set font for the score
-        g.drawString("Player 1: " + user1Score, 50, 30); // Draw player 1's score
-        g.drawString("Player 2: " + user2Score, getWidth() - 150, 30); // Draw player 2's score
+        g.drawString(String.valueOf(user1Score), 150, 30); // Draw player 1's score
+        g.drawString(String.valueOf(user2Score), getWidth() - 150, 30); // Draw player 2's score
 
         if (powerUp != null) {
             powerUp.draw(g);
