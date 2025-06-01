@@ -54,15 +54,18 @@ public class MainMenu extends JPanel {
         JButton playWithComputerButton = new JButton("Play with Computer");
         JButton play1v1Button = new JButton("1v1");
         JButton settingsButton = new JButton("Settings");
+        JButton statsButton = new JButton("Statistics");
         JButton quitButton = new JButton("Quit");
 
         settingsButton.setAlignmentX(CENTER_ALIGNMENT);
+        statsButton.setAlignmentX(CENTER_ALIGNMENT);
         quitButton.setAlignmentX(CENTER_ALIGNMENT);
 
         Dimension buttonSize = new Dimension(200, 40);
         playWithComputerButton.setPreferredSize(buttonSize);
         play1v1Button.setPreferredSize(buttonSize);
         settingsButton.setMaximumSize(buttonSize);
+        statsButton.setMaximumSize(buttonSize);
         quitButton.setMaximumSize(buttonSize);
 
         // Dodawanie przycisków do panelu
@@ -71,6 +74,8 @@ public class MainMenu extends JPanel {
         add(playButtonsPanel);
         add(Box.createVerticalStrut(20));
         add(settingsButton);
+        add(Box.createVerticalStrut(20));
+        add(statsButton);
         add(Box.createVerticalStrut(20));
         add(quitButton);
 
@@ -98,6 +103,14 @@ public class MainMenu extends JPanel {
             frame.setContentPane(settingsPanel);
             frame.revalidate();
             SwingUtilities.invokeLater(settingsPanel::requestFocusInWindow);
+        });
+
+        statsButton.addActionListener(e -> {
+            timer.stop();
+            Stats statsPanel = new Stats(frame, this);
+            frame.setContentPane(statsPanel);
+            frame.revalidate();
+            SwingUtilities.invokeLater(statsPanel::requestFocusInWindow);
         });
 
         quitButton.addActionListener(e -> System.exit(0));

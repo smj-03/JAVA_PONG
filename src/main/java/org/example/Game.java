@@ -1,11 +1,16 @@
 package org.example;
 
+import com.google.gson.Gson;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Game extends JPanel implements Runnable, KeyListener {
     private Thread gameThread;
@@ -25,6 +30,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private int user1Score, user2Score;
 
     private JButton stopButton;
+    private JButton playAgainButton; // pole w klasie Game
     private JButton returnToMenuButton;
 
     private boolean vsAI;
@@ -41,15 +47,16 @@ public class Game extends JPanel implements Runnable, KeyListener {
         addKeyListener(this); // Add key listener to handle key events
 
         // Create paddles for players
-        user1Paddle = new Paddle(10, 200, 15, 150, Color.BLUE);
-        user2Paddle = new Paddle(760, 200, 15, 150, Color.BLUE);
+        user1Paddle = new Paddle(10, 200, Settings.paddleWidth, Settings.paddleHeight, Settings.paddleColor);
+        user2Paddle = new Paddle(760, 200, Settings.paddleWidth, Settings.paddleHeight, Settings.paddleColor);
 
         // Initialize scores for both players
         user1Score = 0;
         user2Score = 0;
 
         // Create a ball
-        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Initial position and speed of the ball
+        ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor);
+        // Initial position and speed of the ball
         // Create and configure the stop button
         stopButton = new JButton("Stop Game");
         stopButton.setBounds(350, 10, 100, 30); // Position the button
@@ -61,6 +68,24 @@ public class Game extends JPanel implements Runnable, KeyListener {
             }
         });
         add(stopButton); // Add the button to the panel
+
+        playAgainButton = new JButton("Play Again");
+        playAgainButton.setBounds(350, 10, 100, 30); // Position the button
+        playAgainButton.setVisible(false);
+        playAgainButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                playAgainButton.setVisible(false); // Hide the play again button
+                stopButton.setVisible(true); // Show the stop button
+                returnToMenuButton.setVisible(false); // Hide the return to menu button
+                resetGame(); // Reset the game state
+                user1Score = 0; // Reset player 1's score
+                user2Score = 0; // Reset player 2's score
+                //running = true; // Set running to true to start the game loop
+                startGame(); // Start the game
+            }
+        });
+        add(playAgainButton); // Add the button to the panel
 
         // create and configure the return to menu button
         returnToMenuButton = new JButton("Return to Menu");
@@ -92,7 +117,47 @@ public class Game extends JPanel implements Runnable, KeyListener {
             e.printStackTrace(); // Handle interruption exception
         }
     }
+    public void endGame() {
+        running = false; // Zatrzymaj pętlę gry
+        resetGame();
+        // Opcjonalnie: pokaż przycisk powrotu do menu lub ponownego startu gry
+        returnToMenuButton.setVisible(true);
+        playAgainButton.setVisible(true);
+        stopButton.setVisible(false);
+        StatisticsData stats = loadStatsFromJson();
+        stats.gamesPlayed++; // Zwiększ liczbę rozegranych gier
+        if (vsAI){
+            if (stats != null) {
+                // Aktualizuj statystyki na podstawie wyniku
+                if (user1Score > user2Score) {
+                    if(aiDifficulty == aiDifficulty.EASY) {
+                        stats.easyWins++;
+                    } else if (aiDifficulty == aiDifficulty.MEDIUM) {
+                        stats.mediumWins++;
+                    } else if (aiDifficulty == aiDifficulty.HARD) {
+                        stats.hardWins++;
+                    }
+                } else {
+                    if(aiDifficulty == aiDifficulty.EASY) {
+                        stats.easyLosses++;
+                    } else if (aiDifficulty == aiDifficulty.MEDIUM) {
+                        stats.mediumLosses++;
+                    } else if (aiDifficulty == aiDifficulty.HARD) {
+                        stats.hardLosses++;
+                    }
+                }
+            }
+            // Zapisz zaktualizowane statystyki do pliku JSON
+            try (FileWriter writer = new FileWriter("src/main/resources/stats.json")) {
+                new Gson().toJson(stats, writer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        // Pokaż wynik i zresetuj stan gry
+        JOptionPane.showMessageDialog(this, "Game Over! Final Score: Player 1 - " + user1Score + ", Player 2 - " + user2Score);
 
+    }
     @Override
     public void run() {
         // game loop
@@ -120,8 +185,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             // check end game conditions
             if (user1Score >= 5 || user2Score >= 5) { // Example condition for ending the game
                 running = false; // Stop the game loop
-                JOptionPane.showMessageDialog(this, "Game Over! Final Score: Player 1 - " + user1Score + ", Player 2 - " + user2Score);
-                stopGame();
+                endGame();
             }
             try {
                 Thread.sleep(16); // about 60 FPS (1000 ms / 60 = ~16 ms)
@@ -200,7 +264,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             e.printStackTrace();
         }
         // Reset game state for a new game
-        ball = new Ball(400, 300, 20, 3, 3, Color.WHITE); // Reset ball position and speed
+        ball = new Ball(400, 300, 20, Settings.ballSpeed, Settings.ballSpeed, Settings.ballColor); // Reset ball position and speed
     }
 
     @Override
@@ -272,5 +336,13 @@ public class Game extends JPanel implements Runnable, KeyListener {
         g.drawString("Player 1: " + user1Score, 50, 30); // Draw player 1's score
         g.drawString("Player 2: " + user2Score, getWidth() - 150, 30); // Draw player 2's score
 
+    }
+
+    private StatisticsData loadStatsFromJson() {
+        try (FileReader reader = new FileReader("src/main/resources/stats.json")) {
+            return new Gson().fromJson(reader, StatisticsData.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
