@@ -1,5 +1,6 @@
 package org.example;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class PowerUp extends Object {
@@ -17,11 +18,13 @@ public class PowerUp extends Object {
     public void move() {
     }
 
-    static void lengthenPaddle(Paddle paddle) {
+    static void changePaddleLength(Paddle paddle, int length) {
         if (paddle == null) return;
-        int newHeight = paddle.getHeight() + 50;
-        int newY = paddle.getY() - 25;
-        paddle.setHeight(newHeight);
-        paddle.setY(newY);
+        paddle.changeLengthBy(length);
+        Timer resetTimer = new Timer(5000, e -> {
+            paddle.resetLength();
+        });
+        resetTimer.setRepeats(false);
+        resetTimer.start();
     }
 }

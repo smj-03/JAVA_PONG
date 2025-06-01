@@ -18,6 +18,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private final Paddle user1Paddle;
     private final Paddle user2Paddle;
     private Paddle lastHitPaddle;
+    private Paddle willHitPaddle;
 
     private boolean upPressedPaddle1 = false;
     private boolean downPressedPaddle1 = false;
@@ -70,7 +71,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
         });
         add(stopButton); // Add the button to the panel
 
-        spawnPowerUp();
 
         playAgainButton = new JButton("Play Again");
         playAgainButton.setBounds(350, 10, 100, 30); // Position the button
@@ -101,6 +101,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
             topFrame.revalidate();
         });
         add(returnToMenuButton);
+
+        spawnPowerUp();
     }
 
     public void startGame() {
@@ -173,29 +175,17 @@ public class Game extends JPanel implements Runnable, KeyListener {
             ball.bounceOffWalls(0, getHeight()); // Bounce the ball off the walls
             if (user1Paddle.intersects(ball)) {
                 lastHitPaddle = user1Paddle;
+                willHitPaddle = user2Paddle;
                 ball.bounceFromPaddle(user1Paddle); // Bounce the ball off player 1's paddle
             }
 
             if (user2Paddle.intersects(ball)) {
                 lastHitPaddle = user2Paddle;
+                willHitPaddle = user1Paddle;
                 ball.bounceFromPaddle(user2Paddle); // Bounce the ball off player 2's paddle
             }
 
-            if (powerUp != null && powerUp.intersects(ball)) {
-
-                powerUp = null; // Remove the power-up
-
-                PowerUp.lengthenPaddle(lastHitPaddle);
-
-                Timer timer = new Timer(3000, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        spawnPowerUp(); // Spawn a new PowerUp
-                    }
-                });
-                timer.setRepeats(false); // Ensure the timer runs only once
-                timer.start();
-            }
+            if (powerUp != null && powerUp.intersects(ball)) applyPowerUp();
 
             // Check for scoring conditions
             if (ball.getX() < 0) { // Ball went out on player 2's side
@@ -278,6 +268,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     public void resetGame() {
+        lastHitPaddle = null;
+        willHitPaddle = null;
+        user1Paddle.resetLength();
+        user2Paddle.resetLength();
+
         //pause for a second
         try {
             Thread.sleep(1000);
@@ -363,11 +358,30 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
     }
 
-    public void spawnPowerUp() {
-        int randomX = (int) (Math.random() * 500) + 100; // Random x within panel width
-        int randomY = (int) (Math.random() * 300) + 100; // Random y within panel height
-        powerUp = new PowerUp(randomX, randomY, 50, 50, Color.GREEN); // Create PowerUp with random position
-        repaint();
+    private void applyPowerUp() {
+        int number = (int) (Math.random() * 2) + 1;
+        switch (number) {
+            case 1:
+                PowerUp.changePaddleLength(lastHitPaddle, 100);
+                break;
+            case 2:
+                PowerUp.changePaddleLength(willHitPaddle, -100);
+                break;
+        }
+
+        powerUp = null; // Remove the power-upi
+        spawnPowerUp();
+    }
+
+    private void spawnPowerUp() {
+        Timer powerUpTimer = new Timer(10000, e -> {
+            int randomX = (int) (Math.random() * 500) + 100; // Random x within panel width
+            int randomY = (int) (Math.random() * 300) + 100; // Random y within panel height
+            powerUp = new PowerUp(randomX, randomY, 50, 50, Color.GREEN); // Create PowerUp with random position
+            repaint();
+        });
+        powerUpTimer.setRepeats(false); // Ensure the timer runs only once
+        powerUpTimer.start();
     }
 
     private StatisticsData loadStatsFromJson() {
