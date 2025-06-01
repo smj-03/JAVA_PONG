@@ -3,15 +3,14 @@ package org.example;
 import java.awt.*;
 
 public class PowerUp extends Object {
-    public PowerUp(int x, int y, int diameter, Color color) {
-        super(x, y, diameter, diameter, color);
+    public PowerUp(int x, int y, int width, int height, Color color) {
+        super(x, y, width, height, color);
     }
 
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
-        // FIXME: DUPA
-        g.fillOval(x - width / 2, y - height / 2, width, height);
+        g.fillRect(x, y, width, height);
     }
 
     @Override

@@ -33,9 +33,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private int user1Score, user2Score;
 
-    private JButton stopButton;
-    private JButton playAgainButton; // pole w klasie Game
-    private JButton returnToMenuButton;
+    private final JButton stopButton;
+    private final JButton playAgainButton; // pole w klasie Game
+    private final JButton returnToMenuButton;
 
     private boolean vsAI;
 
@@ -64,12 +64,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Create and configure the stop button
         stopButton = new JButton("Stop Game");
         stopButton.setBounds(350, 10, 100, 30); // Position the button
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleGameState();
-                requestFocusInWindow();
-            }
+        stopButton.addActionListener(e -> {
+            toggleGameState();
+            requestFocusInWindow();
         });
         add(stopButton); // Add the button to the panel
 
@@ -133,11 +130,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         stopButton.setVisible(false);
         StatisticsData stats = loadStatsFromJson();
         stats.gamesPlayed++; // Zwiększ liczbę rozegranych gier
-        if (vsAI){
+        if (vsAI) {
             if (stats != null) {
                 // Aktualizuj statystyki na podstawie wyniku
                 if (user1Score > user2Score) {
-                    if(aiDifficulty == aiDifficulty.EASY) {
+                    if (aiDifficulty == aiDifficulty.EASY) {
                         stats.easyWins++;
                     } else if (aiDifficulty == aiDifficulty.MEDIUM) {
                         stats.mediumWins++;
@@ -145,7 +142,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
                         stats.hardWins++;
                     }
                 } else {
-                    if(aiDifficulty == aiDifficulty.EASY) {
+                    if (aiDifficulty == aiDifficulty.EASY) {
                         stats.easyLosses++;
                     } else if (aiDifficulty == aiDifficulty.MEDIUM) {
                         stats.mediumLosses++;
@@ -269,8 +266,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 int direction = (dy > 0) ? 1 : -1;
                 user2Paddle.moveYWithinBounds(user2Paddle.getY() + direction * speed, getHeight());
             }
-        }
-        else{
+        } else {
             if (upPressedPaddle2) {
                 user2Paddle.moveYWithinBounds(user2Paddle.getY() - 5, getHeight()); // move up player 2
             }
@@ -368,10 +364,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     public void spawnPowerUp() {
-        // FIXME X Y SPAWNING
-        int randomX = (int) (Math.random() * 600) + 100; // Random x within panel width
-        int randomY = (int) (Math.random() * 400) + 100; // Random y within panel height
-        powerUp = new PowerUp(400, 300, 100, Color.GREEN); // Create PowerUp with random position
+        int randomX = (int) (Math.random() * 500) + 100; // Random x within panel width
+        int randomY = (int) (Math.random() * 300) + 100; // Random y within panel height
+        powerUp = new PowerUp(randomX, randomY, 50, 50, Color.GREEN); // Create PowerUp with random position
         repaint();
     }
 
