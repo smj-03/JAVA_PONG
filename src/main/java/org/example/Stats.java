@@ -37,7 +37,7 @@ public class Stats extends MainMenu {
         }
 
         JLabel statsLabel = new JLabel(statsText);
-        statsLabel.setFont(new Font("Courier New", Font.BOLD, 12));
+        statsLabel.setFont(new Font("Courier New", Font.BOLD, 16));
         statsLabel.setForeground(Color.WHITE);
 
         // Pomocniczy panel do centrowania
