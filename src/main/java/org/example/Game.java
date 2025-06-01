@@ -377,13 +377,19 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     private void applyPowerUp() {
-        int number = (int) (Math.random() * 2) + 1;
+        int number = (int) (Math.random() * 4) + 1;
         switch (number) {
             case 1:
-                PowerUp.changePaddleLength(lastHitPaddle, 100);
+                PowerUp.changePaddleLength(lastHitPaddle, 2.0f);
                 break;
             case 2:
-                PowerUp.changePaddleLength(willHitPaddle, -100);
+                PowerUp.changePaddleLength(willHitPaddle, 0.5f);
+                break;
+            case 3:
+                PowerUp.changeBallSize(ball, 3.0f);
+                break;
+            case 4:
+                PowerUp.changeBallSize(ball, 0.5f);
                 break;
         }
 

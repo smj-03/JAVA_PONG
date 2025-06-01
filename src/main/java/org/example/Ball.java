@@ -4,9 +4,11 @@ import java.awt.*;
 
 public class Ball extends Object {
     private int xSpeed, ySpeed;
+    private int initialDiameter;
 
     public Ball(int x, int y, int diameter, int xSpeed, int ySpeed, Color color) {
         super(x, y, diameter, diameter, color);
+        this.initialDiameter = diameter;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
     }
@@ -74,6 +76,17 @@ public class Ball extends Object {
         if (Math.abs(xSpeed) > maxSpeed) {
             xSpeed = (xSpeed > 0) ? maxSpeed : -maxSpeed;
         }
+    }
+
+    public void changeSizeByPercentage(float percentage) {
+        if (percentage <= 0) return;
+        width = (int) (width * percentage);
+        height = (int) (height * percentage);
+    }
+
+    public void resetSize() {
+        width = initialDiameter;
+        height = initialDiameter;
     }
 
     @Override

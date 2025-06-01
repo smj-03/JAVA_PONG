@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 class PaddleTest {
 
     @Test
-    void testChangeLengthBy_IncreaseLength() {
+    void testChangeLengthBy_IncreaseHeightPercentage() {
         // Załóżmy, że domyślnie paddleHeight = 20 (np. z Settings),
         // ale tutaj bezpośrednio w konstruktorze podajemy height=20.
         Paddle paddle = new Paddle(0, 100, 10, 20, Color.BLUE);
         int initialY = paddle.getY();
         int initialHeight = paddle.getHeight();
 
-        paddle.changeLengthBy(10);
+        paddle.changeHeightByPercentage(10);
         // Nowa wysokość: 20 + 10 = 30
         assertEquals(30, paddle.getHeight(),
                 "Po changeLengthBy(10) paddleHeight powinno być 30");
@@ -31,7 +31,7 @@ class PaddleTest {
         int initHeight = paddle.getHeight(); // 40
 
         // najpierw zmieniamy długość, np. o +20
-        paddle.changeLengthBy(20);
+        paddle.changeHeightByPercentage(20);
         assertEquals(60, paddle.getHeight(),
                 "Po changeLengthBy(20) wysokość = 60");
         // y zmieniło się z 200 na 200 - 10 = 190 (ponieważ length/2 = 10)

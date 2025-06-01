@@ -21,11 +21,21 @@ public class PowerUp extends Object {
     public void move() {
     }
 
-    static void changePaddleLength(Paddle paddle, int length) {
+    static void changePaddleLength(Paddle paddle, float percentage) {
         if (paddle == null) return;
-        paddle.changeLengthBy(length);
+        paddle.changeHeightByPercentage(percentage);
         Timer resetTimer = new Timer(5000, e -> {
             paddle.resetLength();
+        });
+        resetTimer.setRepeats(false);
+        resetTimer.start();
+    }
+
+    static void changeBallSize(Ball ball, float percentage) {
+        if (ball == null) return;
+        ball.changeSizeByPercentage(percentage);
+        Timer resetTimer = new Timer(5000, e -> {
+            ball.resetSize();
         });
         resetTimer.setRepeats(false);
         resetTimer.start();
