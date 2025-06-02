@@ -13,8 +13,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-//Klasa Game odpowiada za logike gry w Pong.
-//Dziedziczy po JPanel, implementuje Runnable (petle gry) oraz KeyListener obsluga klawiatury
 public class Game extends JPanel implements Runnable, KeyListener {
     //Watek odpowiadający za petlę gry
     private Thread gameThread;
@@ -33,9 +31,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     //Referencja do paletki, ktora bedzie następna uderzac pilke
     private Paddle willHitPaddle;
 
-
     private String imagesPath = "src/main/resources/images/";
-
 
     // Flagi klawiszy dla sterowania paletkami(gracz 1: W i S)
     private boolean upPressedPaddle1 = false;
@@ -91,9 +87,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
         // Tworzenie i konfiguracja przycisku "Stop Game"
         stopButton = new ImageButton(imagesPath + "stopbutton.png", 360, 10);
-
-        
-
         stopButton.addActionListener(e -> {
             toggleGameState();
             requestFocusInWindow();
@@ -103,7 +96,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Tworzenie i konfiguracja przycisku "Play Again" (ukryty na start)
         playAgainButton = new ImageButton(imagesPath + "playagainbutton.png", 336, 360);
 
-       
+
 
         playAgainButton.setVisible(false);
         playAgainButton.addActionListener(new ActionListener() {
@@ -126,7 +119,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         //Tworzenie i konfiguracja przycisku "Return to Menu"
         returnToMenuButton = new ImageButton(imagesPath + "menubutton.png", 272, 156);
 
-       
+
 
         returnToMenuButton.setVisible(false);
         returnToMenuButton.addActionListener(e -> {
@@ -148,7 +141,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
         requestFocusInWindow(); // fokus na klawiature
         gameThread = new Thread(this); // utworzenie watku gry
         gameThread.start(); // uruchomienie watku gry
-
     }
 
     //metoda zatrzymujaca gre
@@ -264,7 +256,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
         } else {
             startGame(); // wznów gre
             stopButton.setIcon(new ImageIcon(imagesPath + "stopbutton.png"));
-
             returnToMenuButton.setVisible(false);
         }
     }
@@ -340,7 +331,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             upPressedPaddle1 = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_S) {
-            downPressedPaddle1 = true;
+            downPressedPaddle1 = true; // Set flag for paddle 1 moving down
         }
         //Sterowanie paletka gracza 2: strzalki
         if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -418,13 +409,19 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
     //Metoda stosująca efekt power-upa po kolizji z piłką
     private void applyPowerUp() {
-        int number = (int) (Math.random() * 2) + 1;
+        int number = (int) (Math.random() * 4) + 1;
         switch (number) {
             case 1:
-                PowerUp.changePaddleLength(lastHitPaddle, 100);
+                PowerUp.changePaddleLength(lastHitPaddle, 2.0f);
                 break;
             case 2:
-                PowerUp.changePaddleLength(willHitPaddle, -100);
+                PowerUp.changePaddleLength(willHitPaddle, 0.5f);
+                break;
+            case 3:
+                PowerUp.changeBallSize(ball, 3.0f);
+                break;
+            case 4:
+                PowerUp.changeBallSize(ball, 0.5f);
                 break;
         }
 
@@ -437,8 +434,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         Timer powerUpTimer = new Timer(10000, e -> {
             if (gameEnded) return;
             int randomX = (int) (Math.random() * 500) + 100;
-            int randomY = (int) (Math.random() * 300) + 100; 
-            powerUp = new PowerUp(randomX, randomY, imagesPath + "powerupSprite.png"); 
+            int randomY = (int) (Math.random() * 300) + 100;
+            powerUp = new PowerUp(randomX, randomY, imagesPath + "powerupSprite.png");
 
             repaint();
         });

@@ -13,10 +13,11 @@ public class Paddle extends Object {
         this.initialLength = height;
     }
 
-    //zmiana dlugosci paletki(uzywane przy PowerUp)
-    public void changeLengthBy(int length) {
-        height += length;
-        y -= length / 2;
+    public void changeHeightByPercentage(float percentage) {
+        if (percentage <= 0) return;
+        int newHeight = (int) (initialLength * percentage); // Scale height by the factor
+        y += (height - newHeight) / 2; // Adjust position to center the paddle
+        height = newHeight; // Update the height
     }
 
     //przywracanie dlugosci paletki

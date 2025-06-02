@@ -5,10 +5,13 @@ import java.awt.*;
 //klasa ball reprezentuje pilke dziedziczy po Object-klasie abstrakcyjnej
 // zapewniajacej pozycje, wymiar kolor itp.
 public class Ball extends Object {
+    private int initialDiameter;
     private int xSpeed, ySpeed; //predkosc pilki
     //konstruktor pilki
+
     public Ball(int x, int y, int diameter, int xSpeed, int ySpeed, Color color) {
         super(x, y, diameter, diameter, color);
+        this.initialDiameter = diameter;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
     }
@@ -34,26 +37,21 @@ public class Ball extends Object {
     //odbijanie pilki od gornej i dolnej granicy
     public void bounceOffWalls(int top, int bottom, boolean isViewportSet) {
         //jezeli pilka jest ponizej dolnej krawedzi odwracamy kierunek
-        if (y > 540) { //wymiary ekranu w grze sa narzucone wiec mozemy uzyc "sztywnej wartosci"
+        if (y + height > bottom) {
+            reverseYDirection();
+        } else if (y < top) {
             reverseYDirection();
         }
-        //analogicznie dla gornej krawedzi ekranu
-        else if (y < 0) {
-            reverseYDirection();
-        }
+
         if (isViewportSet) {
-            //if the x value is at the right side of the screen
-            if (x > 770) {
+            if (x + width > 782) {
                 reverseXDirection();
-            }
-            //if the x value is at the left side of the screen
-            else if (x < 0) {
+            } else if (x <= 0) {
                 reverseXDirection();
             }
         }
-
-
     }
+
     //odbijanie pilki od paletki
     public void bounceFromPaddle(Paddle paddle) {
         reverseXDirection(); // zmiana kierunku w poziomie
@@ -83,6 +81,17 @@ public class Ball extends Object {
         if (Math.abs(xSpeed) > maxSpeed) {
             xSpeed = (xSpeed > 0) ? maxSpeed : -maxSpeed;
         }
+    }
+
+    public void changeSizeByPercentage(float percentage) {
+        if (percentage <= 0) return;
+        width = (int) (width * percentage);
+        height = (int) (height * percentage);
+    }
+
+    public void resetSize() {
+        width = initialDiameter;
+        height = initialDiameter;
     }
 
     //rysowanie pilki metoda z klasy abstrakcyjnej object

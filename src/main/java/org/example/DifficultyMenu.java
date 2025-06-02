@@ -23,10 +23,8 @@ public class DifficultyMenu extends MainMenu {
         TextButton hardButton = new TextButton("Hard");
         TextButton backButton = new TextButton("Back");
 
-
         Dimension buttonSize = new Dimension(200, 40);//wspolny rozmiar
         for (TextButton b : new TextButton[]{easyButton, mediumButton, hardButton, backButton}) {
-
             b.setMaximumSize(buttonSize);
             b.setAlignmentX(CENTER_ALIGNMENT);
             add(Box.createVerticalStrut(15));
@@ -43,6 +41,7 @@ public class DifficultyMenu extends MainMenu {
             parent.resumeAnimation();
         });
     }
+
     //Metoda pomocnicza do uruchomienia gry z wybranym poziomem trudnosci
     private void startGame(JFrame frame, aiDifficulty difficulty) {
         Game gamePanel = new Game(true, difficulty);
