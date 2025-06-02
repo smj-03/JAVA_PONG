@@ -3,6 +3,8 @@ package org.example;
 import javax.swing.*;
 import java.awt.*;
 
+//klasa Powerup reprezentuje bonus dziedziczy po Object-klasie abstrakcyjnej
+// zapewniajacej pozycje, wymiar kolor itp.
 public class PowerUp extends Object {
     private Image sprite;
 
@@ -11,6 +13,8 @@ public class PowerUp extends Object {
         this.sprite = new ImageIcon(spritePath).getImage();
     }
 
+    //nadpisanie metod z klasy Object
+    //Rysowanie PowerUpa – jako prostokat.
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
@@ -21,14 +25,15 @@ public class PowerUp extends Object {
     public void move() {
     }
 
+    //zmiana dlugosci paletki na czas 5sekund
     static void changePaddleLength(Paddle paddle, float percentage) {
         if (paddle == null) return;
         paddle.changeHeightByPercentage(percentage);
         Timer resetTimer = new Timer(5000, e -> {
             paddle.resetLength();
         });
-        resetTimer.setRepeats(false);
-        resetTimer.start();
+        resetTimer.setRepeats(false);//tylko jedno wykonanie
+        resetTimer.start();//uruchom timer
     }
 
     static void changeBallSize(Ball ball, float percentage) {

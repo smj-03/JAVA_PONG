@@ -6,29 +6,33 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+//punkt startowy aplikacji
 public class Main {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("PONG"); // create a new JFrame to hold the game
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // exit the application when the window is closed
+        JFrame frame = new JFrame("PONG"); //tworzenie nowego okna 
+
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //zakonczenie programu przy zamknieciu okna
 
         try {
-            // Load the logo image
+            // logo gry
             Image logo = ImageIO.read(new File("src/main/resources/images/pong.png"));
-            // Set the logo as the app icon
+            // ustawienie loga gry
             frame.setIconImage(logo);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        frame.setSize(800, 600); // set the size of the frame
+        frame.setSize(800, 600); //rozmiar okna
 
-        frame.setResizable(false); // allow resizing of the window
 
-        frame.setLocationRelativeTo(null); // center the frame on the screen
+        frame.setResizable(false);//blokowanie mozliwosci zmiany rozmiaru okna
 
-        MainMenu menuPanel = new MainMenu(frame);
-        frame.setContentPane(menuPanel); // pokaż menu
-        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);//ustawianie okna na srodek ekranu
+
+        MainMenu menuPanel = new MainMenu(frame);//utworzenie menu
+        frame.setContentPane(menuPanel);//ustawienie menu na zawartosc okna
+        frame.setVisible(true);//pokazanie menu
     }
 }
