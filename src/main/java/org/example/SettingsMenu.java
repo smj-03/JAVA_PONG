@@ -99,6 +99,7 @@ public class SettingsMenu extends JPanel {
 
         ballSpeedPanel.setMaximumSize(new Dimension(BOX_WIDTH, 35));
 
+
         ballSpeedPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel ballSpeedLabel = new JLabel("Ball speed");
@@ -127,6 +128,7 @@ public class SettingsMenu extends JPanel {
 
         paddleWidthPanel.setMaximumSize(new Dimension(BOX_WIDTH, 35));
 
+
         paddleWidthPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel paddleWidthLabel = new JLabel("Paddle width");
@@ -153,7 +155,9 @@ public class SettingsMenu extends JPanel {
         JPanel paddleHeightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         paddleHeightPanel.setBackground(Color.BLACK);
 
+
         paddleHeightPanel.setMaximumSize(new Dimension(BOX_WIDTH, 35));
+
 
         paddleHeightPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
