@@ -59,8 +59,6 @@ public class MainMenu extends JPanel {
         add(author);
         add(Box.createVerticalStrut(100));//odstep
       
-        add(Box.createVerticalStrut(50));
-
         createButtons(frame);//tworzenie przyciskow
 
     }
