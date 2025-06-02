@@ -28,26 +28,21 @@ public class Ball extends Object {
     }
 
     public void bounceOffWalls(int top, int bottom, boolean isViewportSet) {
-        //if the y value is at the bottom of the screen
-        if (y > 540) {
+        // Adjust for the ball's height when checking the top and bottom boundaries
+        if (y + height > bottom) { // Bottom boundary
+            reverseYDirection();
+        } else if (y < top) { // Top boundary
             reverseYDirection();
         }
-        //if y value is at top of screen
-        else if (y < 0) {
-            reverseYDirection();
-        }
+
         if (isViewportSet) {
-            //if the x value is at the right side of the screen
-            if (x > 770) {
+            // Adjust for the ball's width when checking the left and right boundaries
+            if (x + width > 782) { // Right boundary
                 reverseXDirection();
-            }
-            //if the x value is at the left side of the screen
-            else if (x < 0) {
+            } else if (x <= 0) { // Left boundary
                 reverseXDirection();
             }
         }
-
-
     }
 
     public void bounceFromPaddle(Paddle paddle) {
